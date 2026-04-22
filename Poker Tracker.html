@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///C:/Users/Admin/Downloads/poker-tracker_1.html -->
+<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poker Tracker</title>
+<link href="./Poker Tracker_files/css2" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
+  --green:#22c55e;--green-dim:#16a34a;--green-bg:rgba(34,197,94,0.08);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.08);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.08);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.08);
+  --white:#e6edf3;--muted:#8b949e;--border:rgba(255,255,255,0.08);
+  --radius:8px;
+}
+body{background:var(--bg);color:var(--white);font-family:'DM Mono',monospace;min-height:100vh;}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+
+/* sidebar */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+.logo{padding:0 1.25rem 1.5rem;border-bottom:1px solid var(--border);}
+.logo-main{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--green);letter-spacing:0.04em;}
+.logo-sub{font-size:0.65rem;color:var(--muted);margin-top:2px;}
+.sync-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin-left:6px;vertical-align:middle;}
+.sync-dot.ok{background:var(--green);}
+.sync-dot.err{background:var(--red);}
+.nav{padding:1rem 0;flex:1;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 1.25rem;font-size:0.72rem;color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.06em;text-transform:uppercase;user-select:none;}
+.nav-item:hover{color:var(--white);background:var(--bg3);}
+.nav-item.active{color:var(--green);background:var(--green-bg);}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.bankroll-box{margin:0 1rem;padding:1rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);}
+.bankroll-label{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.bankroll-val{font-size:1.4rem;font-weight:500;margin-top:4px;}
+.bankroll-val.pos{color:var(--green);}
+.bankroll-val.neg{color:var(--red);}
+
+/* loading overlay */
+.loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
+.loading.hidden{display:none;}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite;}
+.loading-text{font-size:0.72rem;color:var(--muted);}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* main */
+.main{padding:2rem;overflow-y:auto;}
+.view{display:none;}
+.view.active{display:block;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+.page-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;}
+.btn{background:var(--green);color:#000;border:none;padding:8px 18px;border-radius:var(--radius);font-size:0.72rem;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:opacity 0.15s;}
+.btn:hover{opacity:0.85;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);padding:6px 14px;border-radius:var(--radius);font-size:0.68rem;font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:all 0.15s;}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);}
+.btn-blue{background:var(--blue);color:#000;border:none;padding:8px 18px;border-radius:var(--radius);font-size:0.72rem;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:opacity 0.15s;}
+.btn-blue:hover{opacity:0.85;}
+.btn-blue:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem;}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;}
+.stat-label{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+.stat-val{font-size:1.3rem;font-weight:500;line-height:1;}
+.stat-val.pos{color:var(--green);}
+.stat-val.neg{color:var(--red);}
+.stat-sub{font-size:0.62rem;color:var(--muted);margin-top:5px;}
+
+/* chart */
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.card-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+.chart-wrap{height:160px;position:relative;}
+canvas{display:block;}
+
+/* filter */
+.filter-row{display:flex;gap:10px;margin-bottom:1rem;align-items:center;}
+.filter-row select{width:auto;font-size:0.68rem;padding:6px 10px;}
+
+/* table */
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.table-head{display:grid;grid-template-columns:110px 1fr 70px 70px 70px 80px 80px 44px;padding:10px 1.25rem;border-bottom:1px solid var(--border);font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.table-row{display:grid;grid-template-columns:110px 1fr 70px 70px 70px 80px 80px 44px;padding:11px 1.25rem;border-bottom:1px solid var(--border);font-size:0.72rem;align-items:center;transition:background 0.12s;}
+.table-row:last-child{border-bottom:none;}
+.table-row:hover{background:var(--bg3);}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.6rem;font-weight:500;}
+.badge-nlh{background:rgba(34,197,94,0.12);color:var(--green);}
+.badge-plo{background:rgba(245,158,11,0.12);color:var(--amber);}
+.badge-mtt{background:rgba(139,92,246,0.12);color:#a78bfa;}
+.pos{color:var(--green);}
+.neg{color:var(--red);}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.82rem;padding:3px 5px;border-radius:4px;transition:all 0.12s;}
+.icon-btn:hover{color:var(--red);background:var(--red-bg);}
+
+/* players */
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.player-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;position:relative;cursor:pointer;transition:border-color 0.15s;}
+.player-card:hover{border-color:rgba(96,165,250,0.35);}
+.player-header{display:flex;align-items:center;gap:10px;margin-bottom:0.75rem;}
+.player-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;flex-shrink:0;}
+.player-name{font-size:0.85rem;font-weight:500;color:var(--white);}
+.player-added{font-size:0.62rem;color:var(--muted);}
+.player-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:0.6rem;}
+.ptag{font-size:0.6rem;padding:2px 7px;border-radius:3px;font-weight:500;}
+.ptag-fish{background:var(--green-bg);color:var(--green);}
+.ptag-reg{background:var(--blue-bg);color:var(--blue);}
+.ptag-whale{background:var(--amber-bg);color:var(--amber);}
+.ptag-aggro{background:var(--red-bg);color:var(--red);}
+.ptag-nit{background:rgba(139,148,158,0.12);color:var(--muted);}
+.player-loc{font-size:0.65rem;color:var(--muted);margin-bottom:0.5rem;}
+.player-note-text{font-size:0.7rem;color:var(--muted);line-height:1.65;white-space:pre-wrap;word-break:break-word;}
+.player-del{position:absolute;top:8px;right:8px;background:none;border:none;color:transparent;cursor:pointer;font-size:0.72rem;padding:3px 5px;border-radius:3px;transition:all 0.12s;}
+.player-card:hover .player-del{color:var(--muted);}
+.player-del:hover{color:var(--red)!important;background:var(--red-bg);}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:2rem;width:500px;max-width:95vw;max-height:92vh;overflow-y:auto;}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);}
+input,select,textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Mono',monospace;font-size:0.78rem;padding:8px 10px;width:100%;transition:border 0.15s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--green);}
+textarea{resize:vertical;min-height:90px;line-height:1.65;}
+select option{background:var(--bg2);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;}
+.hint{font-size:0.6rem;color:var(--muted);margin-top:2px;}
+
+/* hands estimate */
+.hands-box{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:0.78rem;display:flex;align-items:center;gap:8px;}
+.hands-box.filled{border-color:rgba(34,197,94,0.3);color:var(--green);}
+.hands-box.empty{color:var(--muted);}
+
+/* color picker */
+.color-picker{display:flex;gap:8px;flex-wrap:wrap;}
+.color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0;}
+.color-dot.selected{border-color:var(--white);transform:scale(1.18);}
+
+/* tag picker */
+.tag-picker{display:flex;gap:6px;flex-wrap:wrap;}
+.tag-opt{padding:4px 10px;border-radius:4px;font-size:0.65rem;font-weight:500;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;transition:all 0.15s;font-family:'DM Mono',monospace;}
+.tag-opt:hover{border-color:var(--muted);}
+.tag-opt.on-fish{background:var(--green-bg);color:var(--green);border-color:var(--green);}
+.tag-opt.on-reg{background:var(--blue-bg);color:var(--blue);border-color:var(--blue);}
+.tag-opt.on-whale{background:var(--amber-bg);color:var(--amber);border-color:var(--amber);}
+.tag-opt.on-aggro{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+.tag-opt.on-nit{background:rgba(139,148,158,0.12);color:var(--muted);border-color:var(--muted);}
+
+/* empty */
+.empty{text-align:center;padding:4rem 2rem;color:var(--muted);}
+.empty-icon{font-size:2.5rem;margin-bottom:1rem;opacity:0.3;}
+.empty p{font-size:0.78rem;line-height:1.8;}
+
+/* toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;font-size:0.72rem;color:var(--white);z-index:500;opacity:0;transform:translateY(8px);transition:all 0.2s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.green{border-color:rgba(34,197,94,0.3);color:var(--green);}
+.toast.red{border-color:rgba(239,68,68,0.3);color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading hidden" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">กำลังเชื่อมต่อ...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-main">♠ Poker Tracker <span class="sync-dot err" id="sync-dot" title="sync status"></span></div>
+      <div class="logo-sub" id="sync-label">offline</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" id="nav-dashboard" onclick="switchView(&#39;dashboard&#39;)">
+        <span class="nav-dot"></span>Dashboard
+      </div>
+      <div class="nav-item" id="nav-players" onclick="switchView(&#39;players&#39;)">
+        <span class="nav-dot"></span>Player Notes
+      </div>
+    </nav>
+    <div class="bankroll-box">
+      <div class="bankroll-label">Net Profit</div>
+      <div class="bankroll-val pos" id="sidebar-profit">+฿0</div>
+    </div>
+    <div style="height:1rem"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="topbar">
+        <div class="page-title">Dashboard</div>
+        <button class="btn" id="btn-new-session" onclick="openSessionModal()">+ New Session</button>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Net Profit</div>
+          <div class="stat-val pos" id="stat-profit">+฿0</div>
+          <div class="stat-sub" id="stat-sessions">0 sessions</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Hourly Rate</div>
+          <div class="stat-val" id="stat-hourly">—</div>
+          <div class="stat-sub" id="stat-hours">0.0 hrs total</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">BB / 100</div>
+          <div class="stat-val" id="stat-bb100">—</div>
+          <div class="stat-sub">~25 hands/hr live</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Win Rate</div>
+          <div class="stat-val" id="stat-winrate">—</div>
+          <div class="stat-sub" id="stat-wl">0W · 0L</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Best Session</div>
+          <div class="stat-val" id="stat-best">—</div>
+          <div class="stat-sub" id="stat-worst">Worst: —</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="card-title">Profit Curve</div>
+          <div id="chart-hint" style="font-size:0.65rem;color:var(--muted)">บันทึก session แรกเพื่อดูกราฟ</div>
+        </div>
+        <div class="chart-wrap"><canvas id="profitChart" width="1586" height="160"></canvas></div>
+      </div>
+      <div class="filter-row">
+        <select id="filter-game" onchange="renderDashboard()">
+          <option value="">ทุก game type</option>
+          <option value="NLH">NLH</option>
+          <option value="PLO">PLO</option>
+          <option value="MTT">MTT</option>
+        </select>
+        <select id="filter-sort" onchange="renderDashboard()">
+          <option value="newest">ล่าสุดก่อน</option>
+          <option value="oldest">เก่าสุดก่อน</option>
+          <option value="profit">กำไรมากสุด</option>
+          <option value="loss">ขาดทุนมากสุด</option>
+        </select>
+      </div>
+      <div class="table-card">
+        <div class="table-head">
+          <div>วันที่</div><div>Location</div><div>Game</div>
+          <div>ชั่วโมง</div><div>Hands*</div><div>Stakes</div>
+          <div>Result</div><div></div>
+        </div>
+        <div id="session-list"><div class="empty"><div class="empty-icon">♣</div><p>ยังไม่มี session<br>กด <strong style="color:var(--green)">+ New Session</strong> เพื่อเริ่มบันทึก</p></div></div>
+      </div>
+      <div style="font-size:0.6rem;color:var(--muted);margin-top:8px">
+        * คำนวณอัตโนมัติ: cash ~25 hands/hr · MTT ~50 hands/hr
+      </div>
+    </div>
+
+    <!-- PLAYER NOTES -->
+    <div class="view" id="view-players">
+      <div class="topbar">
+        <div class="page-title">Player Notes</div>
+        <button class="btn-blue" id="btn-new-player" onclick="openPlayerModal(null)">+ Add Player</button>
+      </div>
+      <div id="players-container">
+        <div class="empty"><div class="empty-icon">👤</div>
+        <p>ยังไม่มีข้อมูลผู้เล่น<br>กด <strong style="color:var(--blue)">+ Add Player</strong> เพื่อเพิ่ม</p></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- SESSION MODAL -->
+<div class="modal-bg" id="session-modal-bg" onclick="bgClose(event,&#39;session-modal-bg&#39;)">
+  <div class="modal">
+    <div class="modal-title">บันทึก Session ใหม่</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>วันที่</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="form-group">
+        <label>Game Type</label>
+        <select id="f-game" onchange="updateHandsEst()">
+          <option value="NLH">NLH Cash</option>
+          <option value="PLO">PLO Cash</option>
+          <option value="MTT">MTT</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" id="f-location" placeholder="เช่น King&#39;s Casino">
+      </div>
+      <div class="form-group">
+        <label>Stakes</label>
+        <input type="text" id="f-stakes" placeholder="25/50">
+      </div>
+      <div class="form-group">
+        <label>Buy-in (฿)</label>
+        <input type="number" id="f-buyin" placeholder="5000" min="0">
+      </div>
+      <div class="form-group">
+        <label>Cash-out (฿)</label>
+        <input type="number" id="f-cashout" placeholder="8000" min="0">
+      </div>
+      <div class="form-group">
+        <label>ชั่วโมงที่เล่น</label>
+        <input type="number" id="f-hours" placeholder="4.5" min="0" step="0.5" oninput="updateHandsEst()">
+      </div>
+      <div class="form-group">
+        <label>Hands (คำนวณอัตโนมัติ)</label>
+        <div class="hands-box empty" id="hands-est"><span>♠</span> กรอกชั่วโมงเพื่อประมาณ</div>
+        <div class="hint">cash ~25/hr · MTT ~50/hr</div>
+      </div>
+      <div class="form-group">
+        <label>BB size (฿) — สำหรับ BB/100</label>
+        <input type="number" id="f-bb" placeholder="50" min="1">
+      </div>
+      <div class="form-group full">
+        <label>Note (ไม่บังคับ)</label>
+        <input type="text" id="f-note" placeholder="เช่น table เทพ, เหนื่อยมาก">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal(&#39;session-modal-bg&#39;)">ยกเลิก</button>
+      <button class="btn" id="btn-save-session" onclick="addSession()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div class="modal-bg" id="player-modal-bg" onclick="bgClose(event,&#39;player-modal-bg&#39;)">
+  <div class="modal">
+    <div class="modal-title" id="player-modal-title">เพิ่มผู้เล่น</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>ชื่อ / Alias</label>
+        <input type="text" id="p-name" placeholder="เช่น BigBlind_Joe">
+      </div>
+      <div class="form-group">
+        <label>สีประจำตัว</label>
+        <div class="color-picker">
+          <div class="color-dot selected" style="background:#22c55e" data-c="#22c55e" onclick="pickColor(this)"></div>
+          <div class="color-dot" style="background:#60a5fa" data-c="#60a5fa" onclick="pickColor(this)"></div>
+          <div class="color-dot" style="background:#f59e0b" data-c="#f59e0b" onclick="pickColor(this)"></div>
+          <div class="color-dot" style="background:#ef4444" data-c="#ef4444" onclick="pickColor(this)"></div>
+          <div class="color-dot" style="background:#a78bfa" data-c="#a78bfa" onclick="pickColor(this)"></div>
+          <div class="color-dot" style="background:#fb923c" data-c="#fb923c" onclick="pickColor(this)"></div>
+          <div class="color-dot" style="background:#8b949e" data-c="#8b949e" onclick="pickColor(this)"></div>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>ป้ายกำกับ (เลือกได้หลายอัน)</label>
+        <div class="tag-picker">
+          <button class="tag-opt" data-tag="fish" onclick="toggleTag(this)">🐟 Fish</button>
+          <button class="tag-opt" data-tag="reg" onclick="toggleTag(this)">♟ Reg</button>
+          <button class="tag-opt" data-tag="whale" onclick="toggleTag(this)">🐋 Whale</button>
+          <button class="tag-opt" data-tag="aggro" onclick="toggleTag(this)">🔥 Aggro</button>
+          <button class="tag-opt" data-tag="nit" onclick="toggleTag(this)">🪨 Nit</button>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Location ที่มักเจอ</label>
+        <input type="text" id="p-location" placeholder="เช่น King&#39;s Casino โต๊ะ 5">
+      </div>
+      <div class="form-group full">
+        <label>Notes เกี่ยวกับผู้เล่น</label>
+        <textarea id="p-note" placeholder="เช่น 3-bet light ใน LP, check-raise bluff เยอะ, limp-call ทุก hand จาก SB..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal(&#39;player-modal-bg&#39;)">ยกเลิก</button>
+      <button class="btn-blue" id="btn-save-player" onclick="savePlayer()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// SUPABASE CONFIG
+// ================================================================
+const SUPA_URL = 'https://axnmucyiddjzeksjxabm.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4bm11Y3lpZGRqemVrc2p4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTI2ODAsImV4cCI6MjA5MjIyODY4MH0.QJYIF5tBeEJiuxgNOwrFGCfuqO54yUDPwLQFfa5DU1Y';
+
+// ================================================================
+// STATE
+// ================================================================
+let sessions = [];
+let players  = [];
+let USER_ID  = null;
+let AUTH_TOKEN = null;
+let editPid  = null;
+let selColor = '#22c55e';
+let selTags  = [];
+
+const HANDS_PER_HR = {NLH:25, PLO:25, MTT:50};
+const TAG_LABEL = {fish:'🐟 Fish', reg:'♟ Reg', whale:'🐋 Whale', aggro:'🔥 Aggro', nit:'🪨 Nit'};
+
+// ================================================================
+// SUPABASE AUTH — anonymous user, persisted in localStorage
+// ================================================================
+async function initAuth(){
+  const stored = localStorage.getItem('pt_auth');
+  if(stored){
+    try{
+      const {access_token, user} = JSON.parse(stored);
+      AUTH_TOKEN = access_token;
+      USER_ID    = user.id;
+      setSyncStatus('ok','synced');
+      return true;
+    }catch(e){ localStorage.removeItem('pt_auth'); }
+  }
+  // สร้าง anonymous account ด้วย email สุ่ม
+  const uid  = Math.random().toString(36).slice(2,10);
+  const email = `player_${uid}@pokertracker.local`;
+  const pass  = crypto.randomUUID();
+  try{
+    const res = await fetch(`${SUPA_URL}/auth/v1/signup`,{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass})
+    });
+    const data = await res.json();
+    if(!data.access_token) throw new Error('auth failed');
+    localStorage.setItem('pt_auth', JSON.stringify({access_token:data.access_token, user:data.user}));
+    // เก็บ pass ไว้ด้วยเผื่อ refresh (optional)
+    localStorage.setItem('pt_cred', JSON.stringify({email,pass}));
+    AUTH_TOKEN = data.access_token;
+    USER_ID    = data.user.id;
+    setSyncStatus('ok','synced');
+    return true;
+  }catch(e){
+    setSyncStatus('err','offline');
+    return false;
+  }
+}
+
+function getHeaders(){
+  return {
+    'apikey': SUPA_KEY,
+    'Authorization': `Bearer ${AUTH_TOKEN}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+  };
+}
+
+// ================================================================
+// DB HELPERS
+// ================================================================
+async function dbGet(table){
+  const res = await fetch(
+    `${SUPA_URL}/rest/v1/${table}?user_id=eq.${USER_ID}&order=created_at.asc`,
+    {headers: getHeaders()}
+  );
+  if(!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function dbInsert(table, row){
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}`,{
+    method:'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({...row, user_id: USER_ID})
+  });
+  if(!res.ok) throw new Error(await res.text());
+  const data = await res.json();
+  return Array.isArray(data) ? data[0] : data;
+}
+
+async function dbUpdate(table, id, row){
+  const res = await fetch(
+    `${SUPA_URL}/rest/v1/${table}?id=eq.${id}&user_id=eq.${USER_ID}`,
+    {method:'PATCH', headers: getHeaders(), body: JSON.stringify(row)}
+  );
+  if(!res.ok) throw new Error(await res.text());
+}
+
+async function dbDelete(table, id){
+  const res = await fetch(
+    `${SUPA_URL}/rest/v1/${table}?id=eq.${id}&user_id=eq.${USER_ID}`,
+    {method:'DELETE', headers: getHeaders()}
+  );
+  if(!res.ok) throw new Error(await res.text());
+}
+
+// ================================================================
+// TOAST & SYNC STATUS
+// ================================================================
+function toast(msg, type='green'){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+function setSyncStatus(state, label){
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  dot.className = 'sync-dot ' + state;
+  lbl.textContent = label;
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.getElementById('nav-'+v).classList.add('active');
+  if(v==='dashboard') renderDashboard();
+  if(v==='players')   renderPlayers();
+}
+
+// ================================================================
+// HANDS ESTIMATE
+// ================================================================
+function updateHandsEst(){
+  const h = parseFloat(document.getElementById('f-hours').value)||0;
+  const g = document.getElementById('f-game').value;
+  const el = document.getElementById('hands-est');
+  if(h>0){
+    const est = Math.round(h*(HANDS_PER_HR[g]||25));
+    el.className='hands-box filled';
+    el.innerHTML=`<span>♠</span> ~${est.toLocaleString()} hands`;
+  } else {
+    el.className='hands-box empty';
+    el.innerHTML=`<span>♠</span> กรอกชั่วโมงเพื่อประมาณ`;
+  }
+}
+
+// ================================================================
+// SESSION MODAL
+// ================================================================
+function openSessionModal(){
+  document.getElementById('session-modal-bg').classList.add('open');
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  updateHandsEst();
+}
+
+async function addSession(){
+  const date     = document.getElementById('f-date').value;
+  const game     = document.getElementById('f-game').value;
+  const location = document.getElementById('f-location').value||'—';
+  const stakes   = document.getElementById('f-stakes').value||'—';
+  const buyin    = parseFloat(document.getElementById('f-buyin').value)||0;
+  const cashout  = parseFloat(document.getElementById('f-cashout').value)||0;
+  const hours    = parseFloat(document.getElementById('f-hours').value)||0;
+  const bb       = parseFloat(document.getElementById('f-bb').value)||0;
+  const note     = document.getElementById('f-note').value;
+  if(!date){alert('กรุณาใส่วันที่');return;}
+
+  const hands  = hours>0 ? Math.round(hours*(HANDS_PER_HR[game]||25)) : 0;
+  const profit = cashout - buyin;
+  const id     = Date.now();
+
+  const btn = document.getElementById('btn-save-session');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+
+  try{
+    await dbInsert('sessions',{id,date,game,location,stakes,buyin,cashout,profit,hours,hands,bb,note});
+    sessions = await dbGet('sessions');
+    toast('✓ บันทึก session แล้ว');
+    closeModal('session-modal-bg');
+    ['f-location','f-stakes','f-buyin','f-cashout','f-hours','f-bb','f-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-game').selectedIndex=0;
+    updateHandsEst();
+    renderDashboard();
+  }catch(e){
+    toast('เกิดข้อผิดพลาด: '+e.message,'red');
+  }finally{
+    btn.disabled=false; btn.textContent='บันทึก';
+  }
+}
+
+async function deleteSession(id){
+  if(!confirm('ลบ session นี้?'))return;
+  try{
+    await dbDelete('sessions', id);
+    sessions = sessions.filter(s=>s.id!==id);
+    toast('ลบแล้ว');
+    renderDashboard();
+  }catch(e){ toast('ลบไม่ได้: '+e.message,'red'); }
+}
+
+// ================================================================
+// PLAYER MODAL
+// ================================================================
+function openPlayerModal(id){
+  editPid=id; selTags=[]; selColor='#22c55e';
+  document.querySelectorAll('.tag-opt').forEach(b=>b.className='tag-opt');
+  document.querySelectorAll('.color-dot').forEach(d=>{
+    d.classList.toggle('selected', d.dataset.c==='#22c55e');
+  });
+  if(id){
+    const p=players.find(x=>x.id===id);
+    if(!p)return;
+    document.getElementById('player-modal-title').textContent='แก้ไขผู้เล่น';
+    document.getElementById('p-name').value=p.name;
+    document.getElementById('p-location').value=p.location||'';
+    document.getElementById('p-note').value=p.note||'';
+    selColor=p.color||'#22c55e';
+    selTags=[...(p.tags||[])];
+    document.querySelectorAll('.color-dot').forEach(d=>d.classList.toggle('selected',d.dataset.c===selColor));
+    selTags.forEach(t=>{
+      const b=document.querySelector(`.tag-opt[data-tag="${t}"]`);
+      if(b) b.classList.add('on-'+t);
+    });
+  } else {
+    document.getElementById('player-modal-title').textContent='เพิ่มผู้เล่น';
+    ['p-name','p-location','p-note'].forEach(id=>document.getElementById(id).value='');
+  }
+  document.getElementById('player-modal-bg').classList.add('open');
+}
+
+function pickColor(el){
+  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
+  el.classList.add('selected'); selColor=el.dataset.c;
+}
+
+function toggleTag(el){
+  const t=el.dataset.tag, cls='on-'+t;
+  if(el.classList.contains(cls)){
+    el.classList.remove(cls); selTags=selTags.filter(x=>x!==t);
+  } else {
+    el.classList.add(cls); if(!selTags.includes(t)) selTags.push(t);
+  }
+}
+
+async function savePlayer(){
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){alert('กรุณาใส่ชื่อผู้เล่น');return;}
+  const location=document.getElementById('p-location').value;
+  const note=document.getElementById('p-note').value;
+
+  const btn=document.getElementById('btn-save-player');
+  btn.disabled=true; btn.textContent='กำลังบันทึก...';
+
+  try{
+    if(editPid){
+      await dbUpdate('players', editPid, {name,color:selColor,tags:selTags,location,note});
+    } else {
+      const added=new Date().toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
+      await dbInsert('players',{id:Date.now(),name,color:selColor,tags:selTags,location,note,added});
+    }
+    players = await dbGet('players');
+    toast(editPid?'✓ อัปเดตแล้ว':'✓ เพิ่มผู้เล่นแล้ว');
+    closeModal('player-modal-bg');
+    renderPlayers();
+  }catch(e){ toast('เกิดข้อผิดพลาด: '+e.message,'red'); }
+  finally{ btn.disabled=false; btn.textContent='บันทึก'; }
+}
+
+async function deletePlayer(id){
+  if(!confirm('ลบข้อมูลผู้เล่นนี้?'))return;
+  try{
+    await dbDelete('players', id);
+    players=players.filter(p=>p.id!==id);
+    toast('ลบแล้ว');
+    renderPlayers();
+  }catch(e){ toast('ลบไม่ได้: '+e.message,'red'); }
+}
+
+// ================================================================
+// MODAL UTILS
+// ================================================================
+function bgClose(e,id){if(e.target===document.getElementById(id)) closeModal(id);}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ================================================================
+// STATS
+// ================================================================
+function computeStats(list){
+  const total=list.reduce((a,s)=>a+(parseFloat(s.profit)||0),0);
+  const totalHours=list.reduce((a,s)=>a+(parseFloat(s.hours)||0),0);
+  const wins=list.filter(s=>s.profit>0).length;
+  const losses=list.filter(s=>s.profit<=0).length;
+  const winrate=list.length?(wins/list.length*100):null;
+  const hourly=totalHours>0?(total/totalHours):null;
+  const cash=list.filter(s=>s.game!=='MTT'&&s.hands>0&&s.bb>0);
+  let bb100=null;
+  if(cash.length){
+    const bbP=cash.reduce((a,s)=>a+(s.profit/s.bb),0);
+    const hT=cash.reduce((a,s)=>a+s.hands,0);
+    bb100=hT>0?(bbP/hT*100):null;
+  }
+  const profits=list.map(s=>parseFloat(s.profit)||0);
+  const best=list.length?Math.max(...profits):null;
+  const worst=list.length?Math.min(...profits):null;
+  return{total,totalHours,wins,losses,winrate,hourly,bb100,best,worst};
+}
+
+function fs(n,p='฿'){
+  if(n===null||n===undefined)return'—';
+  const s=p+Math.abs(Math.round(n)).toLocaleString();
+  return(n>=0?'+':'-')+s;
+}
+
+// ================================================================
+// CHART
+// ================================================================
+function drawChart(list){
+  const canvas=document.getElementById('profitChart');
+  const wrap=canvas.parentElement;
+  canvas.width=wrap.offsetWidth; canvas.height=wrap.offsetHeight;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const sorted=[...list].sort((a,b)=>a.date.localeCompare(b.date));
+  const hint=document.getElementById('chart-hint');
+  if(!sorted.length){hint.style.display='';return;}
+  hint.style.display='none';
+  let cum=0;
+  const pts=[{x:0,y:0}];
+  sorted.forEach((s,i)=>{cum+=(parseFloat(s.profit)||0);pts.push({x:i+1,y:cum});});
+  const W=canvas.width,H=canvas.height,pd={t:10,r:16,b:28,l:64};
+  const cw=W-pd.l-pd.r,ch=H-pd.t-pd.b;
+  const ys=pts.map(p=>p.y);
+  const mn=Math.min(...ys),mx=Math.max(...ys),rng=mx-mn||1,mxX=pts.length-1||1;
+  const tx=x=>pd.l+(x/mxX)*cw;
+  const ty=y=>pd.t+ch-(((y-mn)/rng)*ch);
+  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(pd.l,ty(0));ctx.lineTo(pd.l+cw,ty(0));ctx.stroke();ctx.setLineDash([]);
+  ctx.font='10px DM Mono,monospace';ctx.fillStyle='rgba(139,148,158,0.65)';ctx.textAlign='right';
+  [mn,0,mx].forEach(v=>ctx.fillText((v>=0?'+':'')+Math.round(v/1000)+'k',pd.l-5,ty(v)+3));
+  const gr=ctx.createLinearGradient(0,pd.t,0,pd.t+ch);
+  gr.addColorStop(0,'rgba(34,197,94,0.16)');gr.addColorStop(1,'rgba(34,197,94,0)');
+  ctx.beginPath();ctx.moveTo(tx(0),ty(0));
+  pts.forEach(p=>ctx.lineTo(tx(p.x),ty(p.y)));
+  ctx.lineTo(tx(mxX),ty(0));ctx.closePath();ctx.fillStyle=gr;ctx.fill();
+  ctx.beginPath();ctx.moveTo(tx(pts[0].x),ty(pts[0].y));
+  pts.forEach(p=>ctx.lineTo(tx(p.x),ty(p.y)));
+  ctx.strokeStyle='#22c55e';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  pts.forEach(p=>{
+    ctx.beginPath();ctx.arc(tx(p.x),ty(p.y),3,0,Math.PI*2);
+    ctx.fillStyle='#22c55e';ctx.fill();ctx.strokeStyle='#0d1117';ctx.lineWidth=1.5;ctx.stroke();
+  });
+}
+
+// ================================================================
+// RENDER DASHBOARD
+// ================================================================
+function renderDashboard(){
+  const gf=document.getElementById('filter-game').value;
+  const sf=document.getElementById('filter-sort').value;
+  let fl=gf?sessions.filter(s=>s.game===gf):[...sessions];
+  if(sf==='newest') fl.sort((a,b)=>b.date.localeCompare(a.date));
+  else if(sf==='oldest') fl.sort((a,b)=>a.date.localeCompare(b.date));
+  else if(sf==='profit') fl.sort((a,b)=>b.profit-a.profit);
+  else fl.sort((a,b)=>a.profit-b.profit);
+  const st=computeStats(fl);
+
+  const sp=document.getElementById('sidebar-profit');
+  sp.textContent=fs(st.total); sp.className='bankroll-val '+(st.total>=0?'pos':'neg');
+
+  const p2=document.getElementById('stat-profit');
+  p2.textContent=fs(st.total); p2.className='stat-val '+(st.total>=0?'pos':'neg');
+  document.getElementById('stat-sessions').textContent=fl.length+' sessions';
+
+  const he=document.getElementById('stat-hourly');
+  if(st.hourly!==null){he.textContent=fs(st.hourly)+'/h';he.className='stat-val '+(st.hourly>=0?'pos':'neg');}
+  else{he.textContent='—';he.className='stat-val';}
+  document.getElementById('stat-hours').textContent=st.totalHours.toFixed(1)+' hrs total';
+
+  const be=document.getElementById('stat-bb100');
+  if(st.bb100!==null){be.textContent=(st.bb100>=0?'+':'')+st.bb100.toFixed(1);be.className='stat-val '+(st.bb100>=0?'pos':'neg');}
+  else{be.textContent='—';be.className='stat-val';}
+
+  const we=document.getElementById('stat-winrate');
+  if(st.winrate!==null){we.textContent=st.winrate.toFixed(0)+'%';we.className='stat-val '+(st.winrate>=50?'pos':'neg');}
+  else{we.textContent='—';we.className='stat-val';}
+  document.getElementById('stat-wl').textContent=st.wins+'W · '+st.losses+'L';
+
+  const bst=document.getElementById('stat-best');
+  if(st.best!==null){bst.textContent=fs(st.best);bst.className='stat-val '+(st.best>=0?'pos':'neg');}
+  else{bst.textContent='—';bst.className='stat-val';}
+  document.getElementById('stat-worst').textContent=st.worst!==null?'Worst: '+fs(st.worst):'Worst: —';
+
+  drawChart(gf?fl:sessions);
+
+  const list=document.getElementById('session-list');
+  if(!fl.length){
+    list.innerHTML=`<div class="empty"><div class="empty-icon">♣</div><p>ยังไม่มี session<br>กด <strong style="color:var(--green)">+ New Session</strong> เพื่อเริ่มบันทึก</p></div>`;
+    return;
+  }
+  list.innerHTML=fl.map(s=>{
+    const cls=s.profit>=0?'pos':'neg';
+    const gb=s.game==='NLH'?'badge-nlh':s.game==='PLO'?'badge-plo':'badge-mtt';
+    const dt=new Date(s.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
+    return `<div class="table-row"${s.note?` title="${s.note}"`:''}>`+
+      `<div>${dt}</div>`+
+      `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);padding-right:6px">${s.location}</div>`+
+      `<div><span class="badge ${gb}">${s.game}</span></div>`+
+      `<div>${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</div>`+
+      `<div style="color:var(--muted)">~${s.hands>0?parseInt(s.hands).toLocaleString():'—'}</div>`+
+      `<div style="color:var(--muted);font-size:0.68rem">${s.stakes}</div>`+
+      `<div class="${cls}" style="font-weight:500">${fs(s.profit)}</div>`+
+      `<div><button class="icon-btn" onclick="deleteSession(${s.id})" title="ลบ">✕</button></div>`+
+      `</div>`;
+  }).join('');
+}
+
+// ================================================================
+// RENDER PLAYERS
+// ================================================================
+function renderPlayers(){
+  const c=document.getElementById('players-container');
+  if(!players.length){
+    c.innerHTML=`<div class="empty"><div class="empty-icon">👤</div><p>ยังไม่มีข้อมูลผู้เล่น<br>กด <strong style="color:var(--blue)">+ Add Player</strong> เพื่อเพิ่ม</p></div>`;
+    return;
+  }
+  c.innerHTML=`<div class="players-grid">${players.map(p=>{
+    const init=p.name.slice(0,2).toUpperCase();
+    const tags=(p.tags||[]).map(t=>`<span class="ptag ptag-${t}">${TAG_LABEL[t]||t}</span>`).join('');
+    return `<div class="player-card" onclick="openPlayerModal(${p.id})">
+      <button class="player-del" onclick="event.stopPropagation();deletePlayer(${p.id})">✕</button>
+      <div class="player-header">
+        <div class="player-avatar" style="background:${p.color}22;color:${p.color}">${init}</div>
+        <div>
+          <div class="player-name">${p.name}</div>
+          ${p.added?`<div class="player-added">added ${p.added}</div>`:''}
+        </div>
+      </div>
+      ${tags?`<div class="player-tags">${tags}</div>`:''}
+      ${p.location?`<div class="player-loc">📍 ${p.location}</div>`:''}
+      ${p.note?`<div class="player-note-text">${p.note}</div>`:`<div style="font-size:0.7rem;color:var(--muted);font-style:italic">ไม่มี note</div>`}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ================================================================
+// INIT
+// ================================================================
+window.addEventListener('resize',()=>{
+  if(document.getElementById('view-dashboard').classList.contains('active')) drawChart(sessions);
+});
+
+(async ()=>{
+  const ok = await initAuth();
+  if(ok){
+    try{
+      [sessions, players] = await Promise.all([dbGet('sessions'), dbGet('players')]);
+    }catch(e){
+      toast('โหลดข้อมูลไม่ได้ ลองรีเฟรช','red');
+    }
+  }
+  document.getElementById('loading').classList.add('hidden');
+  renderDashboard();
+})();
+</script>
+
+
+</body></html>
