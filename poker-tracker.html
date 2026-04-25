@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///C:/Users/Admin/Downloads/poker-tracker_3.html -->
+<!-- saved from url=(0053)file:///C:/Users/Admin/Downloads/poker-tracker_4.html -->
 <html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poker Tracker</title>
-<link href="./Poker Tracker_files/css2" rel="stylesheet">
+<link href="./Poker Tracker moblie_files/css2" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -180,6 +180,93 @@ select option{background:var(--bg2);}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.green{border-color:rgba(34,197,94,0.3);color:var(--green);}
 .toast.red{border-color:rgba(239,68,68,0.3);color:var(--red);}
+
+/* mobile bottom nav */
+.bottom-nav{display:none;}
+
+/* FAB button mobile */
+.fab{display:none;}
+
+@media(max-width:768px){
+  /* layout */
+  .app{grid-template-columns:1fr;min-height:calc(100vh - 60px);}
+  .sidebar{display:none;}
+  .main{padding:1rem;padding-bottom:80px;}
+
+  /* mobile top bar */
+  .topbar{margin-bottom:1rem;}
+  .page-title{font-size:1rem;}
+
+  /* stats — 2 columns on mobile */
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem;}
+  .stat{padding:0.75rem;}
+  .stat-val{font-size:1.1rem;}
+
+  /* chart shorter */
+  .chart-wrap{height:120px;}
+
+  /* table — mobile card layout */
+  .table-head{display:none;}
+  .table-row{
+    display:flex;flex-direction:column;gap:6px;
+    padding:12px 1rem;
+    position:relative;
+  }
+  .table-row-top{display:flex;justify-content:space-between;align-items:center;}
+  .table-row-mid{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .table-row-bot{display:flex;justify-content:space-between;align-items:center;}
+
+  /* modal full screen on mobile */
+  .modal{width:100%;max-width:100%;max-height:100vh;border-radius:0;padding:1.25rem;margin:0;position:fixed;bottom:0;border-bottom:none;border-left:none;border-right:none;}
+  .modal-bg{align-items:flex-end;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+
+  /* players grid 1 col */
+  .players-grid{grid-template-columns:1fr;}
+
+  /* toast bottom above nav */
+  .toast{bottom:70px;right:1rem;left:1rem;text-align:center;}
+
+  /* bottom nav */
+  .bottom-nav{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;
+    background:var(--bg2);
+    border-top:1px solid var(--border);
+    z-index:100;
+    height:60px;
+  }
+  .bottom-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--muted);cursor:pointer;transition:color 0.15s;
+    border:none;background:transparent;font-family:'DM Mono',monospace;
+    padding:0;
+  }
+  .bottom-nav-item.active{color:var(--green);}
+  .bottom-nav-icon{font-size:1.1rem;line-height:1;}
+
+  /* FAB */
+  .fab{
+    display:flex;align-items:center;justify-content:center;
+    position:fixed;bottom:72px;right:1rem;
+    width:50px;height:50px;border-radius:50%;
+    background:var(--green);color:#000;
+    font-size:1.4rem;font-weight:700;
+    border:none;cursor:pointer;
+    box-shadow:0 4px 16px rgba(34,197,94,0.35);
+    z-index:101;transition:transform 0.15s,opacity 0.15s;
+  }
+  .fab:active{transform:scale(0.93);}
+
+  /* filter row wrap */
+  .filter-row{flex-wrap:wrap;}
+  .filter-row select{flex:1;min-width:120px;}
+
+  /* auth box mobile */
+  .auth-box{border-radius:12px;padding:1.75rem;}
+}
 </style>
 </head>
 <body>
@@ -215,6 +302,22 @@ select option{background:var(--bg2);}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bottom-nav-item active" id="mnav-dashboard" onclick="switchView(&#39;dashboard&#39;)">
+    <span class="bottom-nav-icon">📊</span>Dashboard
+  </button>
+  <button class="bottom-nav-item" id="mnav-players" onclick="switchView(&#39;players&#39;)">
+    <span class="bottom-nav-icon">👤</span>Players
+  </button>
+  <button class="bottom-nav-item" onclick="logout()">
+    <span class="bottom-nav-icon">🚪</span>ออกจากระบบ
+  </button>
+</nav>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="onFab()">+</button>
 
 <!-- APP -->
 <div class="app" id="app" style="display:none">
@@ -261,7 +364,7 @@ select option{background:var(--bg2);}
           <div class="card-title">Profit Curve</div>
           <div id="chart-hint" style="font-size:0.65rem;color:var(--muted)">บันทึก session แรกเพื่อดูกราฟ</div>
         </div>
-        <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
+        <div class="chart-wrap"><canvas id="profitChart" width="0" height="0"></canvas></div>
       </div>
       <div class="filter-row">
         <select id="filter-game" onchange="renderDashboard()">
@@ -486,10 +589,23 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 function switchView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.getElementById('nav-'+v).classList.add('active');
+  const mn=document.getElementById('mnav-'+v);
+  if(mn) mn.classList.add('active');
+  // FAB label
+  const fab=document.getElementById('fab');
+  if(v==='dashboard') fab.textContent='+';
+  else if(v==='players') fab.textContent='+';
   if(v==='dashboard')renderDashboard();
   if(v==='players')renderPlayers();
+}
+
+function onFab(){
+  const active=document.querySelector('.view.active');
+  if(active&&active.id==='view-players') openPlayerModal(null);
+  else openSessionModal();
 }
 
 // ================================================================
@@ -660,6 +776,14 @@ function renderDashboard(){
   list.innerHTML=fl.map(s=>{
     const cls=s.profit>=0?'pos':'neg',gb=s.game==='NLH'?'badge-nlh':s.game==='PLO'?'badge-plo':'badge-mtt';
     const dt=new Date(s.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
+    const isMobile=window.innerWidth<=768;
+    if(isMobile){
+      return `<div class="table-row"${s.note?` title="${s.note}"`:''}>`+
+        `<div class="table-row-top"><div style="display:flex;align-items:center;gap:8px"><span class="badge ${gb}">${s.game}</span><span style="font-size:0.7rem;color:var(--muted)">${dt}</span></div><div class="${cls}" style="font-weight:600;font-size:1rem">${fs(s.profit)}</div></div>`+
+        `<div class="table-row-mid"><span style="color:var(--muted);font-size:0.68rem">${s.location}</span><span style="color:var(--muted);font-size:0.68rem">·</span><span style="color:var(--muted);font-size:0.68rem">${s.stakes}</span><span style="color:var(--muted);font-size:0.68rem">·</span><span style="color:var(--muted);font-size:0.68rem">${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</span></div>`+
+        `<div style="display:flex;justify-content:flex-end"><button class="icon-btn" onclick="deleteSession(${s.id})">✕ ลบ</button></div>`+
+        `</div>`;
+    }
     return `<div class="table-row"${s.note?` title="${s.note}"`:''}>`+
       `<div>${dt}</div><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);padding-right:6px">${s.location}</div>`+
       `<div><span class="badge ${gb}">${s.game}</span></div><div>${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</div>`+
