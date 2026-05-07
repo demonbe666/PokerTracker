@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///C:/Users/Admin/Downloads/poker-tracker_4.html -->
-<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="th">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poker Tracker</title>
-<link href="./Poker Tracker moblie_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
-  --green:#22c55e;--green-dim:#16a34a;--green-bg:rgba(34,197,94,0.08);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.08);
   --red:#ef4444;--red-bg:rgba(239,68,68,0.08);
   --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.08);
   --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.08);
@@ -17,21 +17,18 @@
   --radius:8px;
 }
 body{background:var(--bg);color:var(--white);font-family:'DM Mono',monospace;min-height:100vh;}
-
-/* loading */
 .loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
 .loading.hidden{display:none;}
 .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite;}
 .loading-text{font-size:0.72rem;color:var(--muted);}
 @keyframes spin{to{transform:rotate(360deg);}}
-
-/* auth screen */
+/* auth */
 .auth-screen{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;}
 .auth-screen.hidden{display:none;}
 .auth-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:380px;max-width:95vw;}
-.auth-logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;color:var(--green);letter-spacing:0.04em;margin-bottom:0.25rem;}
+.auth-logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;color:var(--green);margin-bottom:0.25rem;}
 .auth-sub{font-size:0.65rem;color:var(--muted);margin-bottom:2rem;}
-.auth-tabs{display:flex;gap:0;margin-bottom:1.75rem;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.auth-tabs{display:flex;margin-bottom:1.75rem;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .auth-tab{flex:1;padding:8px;font-size:0.72rem;font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:none;color:var(--muted);cursor:pointer;transition:all 0.15s;}
 .auth-tab.active{background:var(--green);color:#000;}
 .auth-form{display:flex;flex-direction:column;gap:12px;}
@@ -43,16 +40,13 @@ body{background:var(--bg);color:var(--white);font-family:'DM Mono',monospace;min
 .auth-btn:hover{opacity:0.85;}
 .auth-btn:disabled{opacity:0.4;cursor:not-allowed;}
 .auth-err{font-size:0.7rem;color:var(--red);text-align:center;min-height:1rem;}
-
-/* app layout */
+/* layout */
 .app{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
-.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
 .logo{padding:0 1.25rem 1.5rem;border-bottom:1px solid var(--border);}
 .logo-main{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--green);letter-spacing:0.04em;}
 .logo-sub{font-size:0.65rem;color:var(--muted);margin-top:2px;}
-.sync-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin-left:6px;vertical-align:middle;}
-.sync-dot.ok{background:var(--green);}
-.sync-dot.err{background:var(--red);}
+.sync-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:6px;vertical-align:middle;}
 .nav{padding:1rem 0;flex:1;}
 .nav-item{display:flex;align-items:center;gap:10px;padding:8px 1.25rem;font-size:0.72rem;color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.06em;text-transform:uppercase;user-select:none;}
 .nav-item:hover{color:var(--white);background:var(--bg3);}
@@ -67,7 +61,6 @@ body{background:var(--bg);color:var(--white);font-family:'DM Mono',monospace;min
 .bankroll-val.neg{color:var(--red);}
 .user-box{margin:0 1rem 0.75rem;padding:8px 10px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);}
 .user-email{font-size:0.62rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
 /* main */
 .main{padding:2rem;overflow-y:auto;}
 .view{display:none;}
@@ -81,32 +74,38 @@ body{background:var(--bg);color:var(--white);font-family:'DM Mono',monospace;min
 .btn-ghost:hover{border-color:var(--green);color:var(--green);}
 .btn-blue{background:var(--blue);color:#000;border:none;padding:8px 18px;border-radius:var(--radius);font-size:0.72rem;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:opacity 0.15s;}
 .btn-blue:hover{opacity:0.85;}
-.btn-blue:disabled{opacity:0.4;cursor:not-allowed;}
-
 /* stats */
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem;}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.5rem;}
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;}
 .stat-label{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
-.stat-val{font-size:1.3rem;font-weight:500;line-height:1;}
+.stat-val{font-size:1.2rem;font-weight:500;line-height:1;}
 .stat-val.pos{color:var(--green);}
 .stat-val.neg{color:var(--red);}
 .stat-sub{font-size:0.62rem;color:var(--muted);margin-top:5px;}
-
 /* chart */
 .chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;}
 .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
 .card-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
-.chart-wrap{height:160px;position:relative;}
+.chart-wrap{height:160px;}
 canvas{display:block;}
-
+/* club breakdown */
+.clubs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem;}
+.club-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;}
+.club-name{font-size:0.78rem;font-weight:500;color:var(--white);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.club-profit{font-size:1.1rem;font-weight:500;}
+.club-meta{font-size:0.62rem;color:var(--muted);margin-top:4px;}
+.club-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:8px;overflow:hidden;}
+.club-bar-fill{height:100%;border-radius:2px;background:var(--green);}
+/* section header */
+.section-hd{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.section-hd::after{content:'';flex:1;height:1px;background:var(--border);}
 /* filter */
-.filter-row{display:flex;gap:10px;margin-bottom:1rem;align-items:center;}
+.filter-row{display:flex;gap:10px;margin-bottom:1rem;align-items:center;flex-wrap:wrap;}
 .filter-row select{width:auto;font-size:0.68rem;padding:6px 10px;}
-
 /* table */
 .table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.table-head{display:grid;grid-template-columns:110px 1fr 70px 70px 70px 80px 80px 44px;padding:10px 1.25rem;border-bottom:1px solid var(--border);font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
-.table-row{display:grid;grid-template-columns:110px 1fr 70px 70px 70px 80px 80px 44px;padding:11px 1.25rem;border-bottom:1px solid var(--border);font-size:0.72rem;align-items:center;transition:background 0.12s;}
+.table-head{display:grid;grid-template-columns:110px 1fr 70px 60px 70px 80px 80px 36px 36px;padding:10px 1.25rem;border-bottom:1px solid var(--border);font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.table-row{display:grid;grid-template-columns:110px 1fr 70px 60px 70px 80px 80px 36px 36px;padding:11px 1.25rem;border-bottom:1px solid var(--border);font-size:0.72rem;align-items:center;transition:background 0.12s;}
 .table-row:last-child{border-bottom:none;}
 .table-row:hover{background:var(--bg3);}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.6rem;font-weight:500;}
@@ -117,7 +116,15 @@ canvas{display:block;}
 .neg{color:var(--red);}
 .icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.82rem;padding:3px 5px;border-radius:4px;transition:all 0.12s;}
 .icon-btn:hover{color:var(--red);background:var(--red-bg);}
-
+.note-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.82rem;padding:3px 5px;border-radius:4px;transition:all 0.12s;}
+.note-btn:hover{color:var(--blue);background:var(--blue-bg);}
+.note-btn.has-note{color:var(--blue);}
+/* session note modal */
+.note-modal-content{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-size:0.78rem;color:var(--white);line-height:1.8;white-space:pre-wrap;min-height:60px;}
+.note-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;}
+.note-chip{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:0.65rem;color:var(--muted);}
+.note-chip.green{border-color:rgba(34,197,94,0.3);color:var(--green);}
+.note-chip.red{border-color:rgba(239,68,68,0.3);color:var(--red);}
 /* players */
 .players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
 .player-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;position:relative;cursor:pointer;transition:border-color 0.15s;}
@@ -138,7 +145,6 @@ canvas{display:block;}
 .player-del{position:absolute;top:8px;right:8px;background:none;border:none;color:transparent;cursor:pointer;font-size:0.72rem;padding:3px 5px;border-radius:3px;transition:all 0.12s;}
 .player-card:hover .player-del{color:var(--muted);}
 .player-del:hover{color:var(--red)!important;background:var(--red-bg);}
-
 /* modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
 .modal-bg.open{opacity:1;pointer-events:all;}
@@ -154,13 +160,9 @@ textarea{resize:vertical;min-height:90px;line-height:1.65;}
 select option{background:var(--bg2);}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;}
 .hint{font-size:0.6rem;color:var(--muted);margin-top:2px;}
-
-/* hands estimate */
 .hands-box{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:0.78rem;display:flex;align-items:center;gap:8px;}
 .hands-box.filled{border-color:rgba(34,197,94,0.3);color:var(--green);}
 .hands-box.empty{color:var(--muted);}
-
-/* color/tag picker */
 .color-picker{display:flex;gap:8px;flex-wrap:wrap;}
 .color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0;}
 .color-dot.selected{border-color:var(--white);transform:scale(1.18);}
@@ -171,8 +173,6 @@ select option{background:var(--bg2);}
 .tag-opt.on-whale{background:var(--amber-bg);color:var(--amber);border-color:var(--amber);}
 .tag-opt.on-aggro{background:var(--red-bg);color:var(--red);border-color:var(--red);}
 .tag-opt.on-nit{background:rgba(139,148,158,0.12);color:var(--muted);border-color:var(--muted);}
-
-/* empty / toast */
 .empty{text-align:center;padding:4rem 2rem;color:var(--muted);}
 .empty-icon{font-size:2.5rem;margin-bottom:1rem;opacity:0.3;}
 .empty p{font-size:0.78rem;line-height:1.8;}
@@ -180,121 +180,54 @@ select option{background:var(--bg2);}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.green{border-color:rgba(34,197,94,0.3);color:var(--green);}
 .toast.red{border-color:rgba(239,68,68,0.3);color:var(--red);}
-
 /* mobile bottom nav */
 .bottom-nav{display:none;}
-
-/* FAB button mobile */
 .fab{display:none;}
-
 @media(max-width:768px){
-  /* layout */
-  .app{grid-template-columns:1fr;min-height:calc(100vh - 60px);}
+  .app{grid-template-columns:1fr;}
   .sidebar{display:none;}
   .main{padding:1rem;padding-bottom:80px;}
-
-  /* mobile top bar */
   .topbar{margin-bottom:1rem;}
   .page-title{font-size:1rem;}
-
-  /* stats — 2 columns on mobile */
   .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem;}
   .stat{padding:0.75rem;}
-  .stat-val{font-size:1.1rem;}
-
-  /* chart shorter */
+  .stat-val{font-size:1rem;}
   .chart-wrap{height:120px;}
-
-  /* table — mobile card layout */
   .table-head{display:none;}
-  .table-row{
-    display:flex;flex-direction:column;gap:6px;
-    padding:12px 1rem;
-    position:relative;
-  }
-  .table-row-top{display:flex;justify-content:space-between;align-items:center;}
-  .table-row-mid{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-  .table-row-bot{display:flex;justify-content:space-between;align-items:center;}
-
-  /* modal full screen on mobile */
-  .modal{width:100%;max-width:100%;max-height:100vh;border-radius:0;padding:1.25rem;margin:0;position:fixed;bottom:0;border-bottom:none;border-left:none;border-right:none;}
+  .table-row{display:flex;flex-direction:column;gap:6px;padding:12px 1rem;}
+  .clubs-grid{grid-template-columns:repeat(2,1fr);}
+  .modal{width:100%;max-width:100%;max-height:100vh;border-radius:12px 12px 0 0;padding:1.25rem;margin:0;position:fixed;bottom:0;border-bottom:none;border-left:none;border-right:none;}
   .modal-bg{align-items:flex-end;}
   .form-grid{grid-template-columns:1fr;}
   .form-group.full{grid-column:1;}
-
-  /* players grid 1 col */
   .players-grid{grid-template-columns:1fr;}
-
-  /* toast bottom above nav */
   .toast{bottom:70px;right:1rem;left:1rem;text-align:center;}
-
-  /* bottom nav */
-  .bottom-nav{
-    display:flex;
-    position:fixed;bottom:0;left:0;right:0;
-    background:var(--bg2);
-    border-top:1px solid var(--border);
-    z-index:100;
-    height:60px;
-  }
-  .bottom-nav-item{
-    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:3px;font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;
-    color:var(--muted);cursor:pointer;transition:color 0.15s;
-    border:none;background:transparent;font-family:'DM Mono',monospace;
-    padding:0;
-  }
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:100;height:60px;}
+  .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:color 0.15s;border:none;background:transparent;font-family:'DM Mono',monospace;padding:0;}
   .bottom-nav-item.active{color:var(--green);}
   .bottom-nav-icon{font-size:1.1rem;line-height:1;}
-
-  /* FAB */
-  .fab{
-    display:flex;align-items:center;justify-content:center;
-    position:fixed;bottom:72px;right:1rem;
-    width:50px;height:50px;border-radius:50%;
-    background:var(--green);color:#000;
-    font-size:1.4rem;font-weight:700;
-    border:none;cursor:pointer;
-    box-shadow:0 4px 16px rgba(34,197,94,0.35);
-    z-index:101;transition:transform 0.15s,opacity 0.15s;
-  }
+  .fab{display:flex;align-items:center;justify-content:center;position:fixed;bottom:72px;right:1rem;width:50px;height:50px;border-radius:50%;background:var(--green);color:#000;font-size:1.5rem;font-weight:700;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,0.35);z-index:101;transition:transform 0.15s;}
   .fab:active{transform:scale(0.93);}
-
-  /* filter row wrap */
-  .filter-row{flex-wrap:wrap;}
   .filter-row select{flex:1;min-width:120px;}
-
-  /* auth box mobile */
   .auth-box{border-radius:12px;padding:1.75rem;}
 }
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div class="loading hidden" id="loading">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loading-text">กำลังโหลด...</div>
-</div>
+<div class="loading" id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">กำลังโหลด...</div></div>
 
-<!-- AUTH SCREEN -->
-<div class="auth-screen" id="auth-screen">
+<div class="auth-screen hidden" id="auth-screen">
   <div class="auth-box">
     <div class="auth-logo">♠ Poker Tracker</div>
     <div class="auth-sub">personal session log · synced</div>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login" onclick="switchTab(&#39;login&#39;)">เข้าสู่ระบบ</button>
-      <button class="auth-tab" id="tab-register" onclick="switchTab(&#39;register&#39;)">สมัครสมาชิก</button>
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">เข้าสู่ระบบ</button>
+      <button class="auth-tab" id="tab-register" onclick="switchTab('register')">สมัครสมาชิก</button>
     </div>
     <div class="auth-form">
-      <div class="auth-form-group">
-        <label>Email</label>
-        <input type="email" id="auth-email" placeholder="poker@example.com" onkeydown="if(event.key===&#39;Enter&#39;)doAuth()">
-      </div>
-      <div class="auth-form-group">
-        <label>Password</label>
-        <input type="password" id="auth-password" placeholder="อย่างน้อย 6 ตัวอักษร" onkeydown="if(event.key===&#39;Enter&#39;)doAuth()">
-      </div>
+      <div class="auth-form-group"><label>Email</label><input type="email" id="auth-email" placeholder="poker@example.com" onkeydown="if(event.key==='Enter')doAuth()"></div>
+      <div class="auth-form-group"><label>Password</label><input type="password" id="auth-password" placeholder="อย่างน้อย 6 ตัวอักษร" onkeydown="if(event.key==='Enter')doAuth()"></div>
       <div class="auth-err" id="auth-err"></div>
       <button class="auth-btn" id="auth-btn" onclick="doAuth()">เข้าสู่ระบบ</button>
     </div>
@@ -303,44 +236,28 @@ select option{background:var(--bg2);}
 
 <div class="toast" id="toast"></div>
 
-<!-- MOBILE BOTTOM NAV -->
 <nav class="bottom-nav" id="bottom-nav">
-  <button class="bottom-nav-item active" id="mnav-dashboard" onclick="switchView(&#39;dashboard&#39;)">
-    <span class="bottom-nav-icon">📊</span>Dashboard
-  </button>
-  <button class="bottom-nav-item" id="mnav-players" onclick="switchView(&#39;players&#39;)">
-    <span class="bottom-nav-icon">👤</span>Players
-  </button>
-  <button class="bottom-nav-item" onclick="logout()">
-    <span class="bottom-nav-icon">🚪</span>ออกจากระบบ
-  </button>
+  <button class="bottom-nav-item active" id="mnav-dashboard" onclick="switchView('dashboard')"><span class="bottom-nav-icon">📊</span>Dashboard</button>
+  <button class="bottom-nav-item" id="mnav-players" onclick="switchView('players')"><span class="bottom-nav-icon">👤</span>Players</button>
+  <button class="bottom-nav-item" onclick="logout()"><span class="bottom-nav-icon">🚪</span>ออก</button>
 </nav>
-
-<!-- FAB -->
 <button class="fab" id="fab" onclick="onFab()">+</button>
 
-<!-- APP -->
 <div class="app" id="app" style="display:none">
   <aside class="sidebar">
     <div class="logo">
-      <div class="logo-main">♠ Poker Tracker <span class="sync-dot ok" id="sync-dot"></span></div>
+      <div class="logo-main">♠ Poker Tracker <span class="sync-dot" id="sync-dot"></span></div>
       <div class="logo-sub" id="sync-label">synced</div>
     </div>
     <nav class="nav">
-      <div class="nav-item active" id="nav-dashboard" onclick="switchView(&#39;dashboard&#39;)">
-        <span class="nav-dot"></span>Dashboard
-      </div>
-      <div class="nav-item" id="nav-players" onclick="switchView(&#39;players&#39;)">
-        <span class="nav-dot"></span>Player Notes
-      </div>
+      <div class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')"><span class="nav-dot"></span>Dashboard</div>
+      <div class="nav-item" id="nav-players" onclick="switchView('players')"><span class="nav-dot"></span>Player Notes</div>
     </nav>
     <div class="bankroll-box">
       <div class="bankroll-label">Net Profit</div>
       <div class="bankroll-val" id="sidebar-profit">฿0</div>
     </div>
-    <div class="user-box">
-      <div class="user-email" id="user-email-display"></div>
-    </div>
+    <div class="user-box"><div class="user-email" id="user-email-display"></div></div>
     <button class="nav-logout" onclick="logout()">ออกจากระบบ</button>
     <div style="height:0.5rem"></div>
   </aside>
@@ -352,20 +269,34 @@ select option{background:var(--bg2);}
         <div class="page-title">Dashboard</div>
         <button class="btn" onclick="openSessionModal()">+ New Session</button>
       </div>
+
+      <!-- STATS 6 cards -->
       <div class="stats">
         <div class="stat"><div class="stat-label">Net Profit</div><div class="stat-val" id="stat-profit">฿0</div><div class="stat-sub" id="stat-sessions">0 sessions</div></div>
-        <div class="stat"><div class="stat-label">Hourly Rate</div><div class="stat-val" id="stat-hourly">—</div><div class="stat-sub" id="stat-hours">0 hrs total</div></div>
-        <div class="stat"><div class="stat-label">BB / 100</div><div class="stat-val" id="stat-bb100">—</div><div class="stat-sub">~25 hands/hr live</div></div>
+        <div class="stat"><div class="stat-label">Hourly Rate</div><div class="stat-val" id="stat-hourly">—</div><div class="stat-sub" id="stat-hours">0 hrs</div></div>
+        <div class="stat"><div class="stat-label">BB / 100</div><div class="stat-val" id="stat-bb100">—</div><div class="stat-sub">cash games</div></div>
+        <div class="stat"><div class="stat-label">BB / Hour</div><div class="stat-val" id="stat-bbhour">—</div><div class="stat-sub">cash games</div></div>
         <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="stat-winrate">—</div><div class="stat-sub" id="stat-wl">0W · 0L</div></div>
         <div class="stat"><div class="stat-label">Best Session</div><div class="stat-val" id="stat-best">—</div><div class="stat-sub" id="stat-worst">Worst: —</div></div>
       </div>
+
+      <!-- PROFIT CURVE -->
       <div class="chart-card">
         <div class="card-header">
           <div class="card-title">Profit Curve</div>
           <div id="chart-hint" style="font-size:0.65rem;color:var(--muted)">บันทึก session แรกเพื่อดูกราฟ</div>
         </div>
-        <div class="chart-wrap"><canvas id="profitChart" width="0" height="0"></canvas></div>
+        <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
       </div>
+
+      <!-- CLUB BREAKDOWN -->
+      <div class="section-hd">กำไร/ขาดทุน แยกตาม Club / Location</div>
+      <div class="clubs-grid" id="clubs-grid">
+        <div style="font-size:0.72rem;color:var(--muted);padding:1rem 0">ยังไม่มีข้อมูล</div>
+      </div>
+
+      <!-- SESSION LIST -->
+      <div class="section-hd" style="margin-top:1rem">Sessions</div>
       <div class="filter-row">
         <select id="filter-game" onchange="renderDashboard()">
           <option value="">ทุก game type</option>
@@ -382,55 +313,66 @@ select option{background:var(--bg2);}
       </div>
       <div class="table-card">
         <div class="table-head">
-          <div>วันที่</div><div>Location</div><div>Game</div>
-          <div>ชั่วโมง</div><div>Hands*</div><div>Stakes</div>
-          <div>Result</div><div></div>
+          <div>วันที่</div><div>Location</div><div>Game</div><div>ชั่วโมง</div>
+          <div>Hands*</div><div>Stakes</div><div>Result</div><div>📝</div><div></div>
         </div>
         <div id="session-list">
-          <div class="empty"><div class="empty-icon">♣</div><p>ยังไม่มี session<br>กด <strong style="color:var(--green)">+ New Session</strong> เพื่อเริ่มบันทึก</p></div>
+          <div class="empty"><div class="empty-icon">♣</div><p>ยังไม่มี session<br>กด <strong style="color:var(--green)">+ New Session</strong></p></div>
         </div>
       </div>
-      <div style="font-size:0.6rem;color:var(--muted);margin-top:8px">* คำนวณอัตโนมัติ: cash ~25 hands/hr · MTT ~50 hands/hr</div>
+      <div style="font-size:0.6rem;color:var(--muted);margin-top:8px">* cash ~25/hr · MTT ~50/hr</div>
     </div>
 
-    <!-- PLAYERS -->
+    <!-- PLAYER NOTES -->
     <div class="view" id="view-players">
       <div class="topbar">
         <div class="page-title">Player Notes</div>
         <button class="btn-blue" onclick="openPlayerModal(null)">+ Add Player</button>
       </div>
       <div id="players-container">
-        <div class="empty"><div class="empty-icon">👤</div><p>ยังไม่มีข้อมูลผู้เล่น<br>กด <strong style="color:var(--blue)">+ Add Player</strong> เพื่อเพิ่ม</p></div>
+        <div class="empty"><div class="empty-icon">👤</div><p>ยังไม่มีข้อมูลผู้เล่น</p></div>
       </div>
     </div>
   </main>
 </div>
 
 <!-- SESSION MODAL -->
-<div class="modal-bg" id="session-modal-bg" onclick="bgClose(event,&#39;session-modal-bg&#39;)">
+<div class="modal-bg" id="session-modal-bg" onclick="bgClose(event,'session-modal-bg')">
   <div class="modal">
     <div class="modal-title">บันทึก Session ใหม่</div>
     <div class="form-grid">
       <div class="form-group"><label>วันที่</label><input type="date" id="f-date"></div>
       <div class="form-group"><label>Game Type</label><select id="f-game" onchange="updateHandsEst()"><option value="NLH">NLH Cash</option><option value="PLO">PLO Cash</option><option value="MTT">MTT</option></select></div>
-      <div class="form-group"><label>Location</label><input type="text" id="f-location" placeholder="เช่น King&#39;s Casino"></div>
+      <div class="form-group"><label>Location / Club</label><input type="text" id="f-location" placeholder="เช่น King's Casino"></div>
       <div class="form-group"><label>Stakes</label><input type="text" id="f-stakes" placeholder="25/50"></div>
       <div class="form-group"><label>Buy-in (฿)</label><input type="number" id="f-buyin" placeholder="5000" min="0"></div>
       <div class="form-group"><label>Cash-out (฿)</label><input type="number" id="f-cashout" placeholder="8000" min="0"></div>
       <div class="form-group"><label>ชั่วโมงที่เล่น</label><input type="number" id="f-hours" placeholder="4.5" min="0" step="0.5" oninput="updateHandsEst()"></div>
-      <div class="form-group"><label>Hands (คำนวณอัตโนมัติ)</label><div class="hands-box empty" id="hands-est"><span>♠</span> กรอกชั่วโมงเพื่อประมาณ</div><div class="hint">cash ~25/hr · MTT ~50/hr</div></div>
-      <div class="form-group"><label>BB size (฿) — สำหรับ BB/100</label><input type="number" id="f-bb" placeholder="50" min="1"></div>
-      <div class="form-group full"><label>Note</label><input type="text" id="f-note" placeholder="เช่น table เทพ, เหนื่อยมาก"></div>
+      <div class="form-group"><label>Hands (อัตโนมัติ)</label><div class="hands-box empty" id="hands-est"><span>♠</span> กรอกชั่วโมง</div><div class="hint">cash ~25/hr · MTT ~50/hr</div></div>
+      <div class="form-group"><label>BB size (฿)</label><input type="number" id="f-bb" placeholder="50" min="1"></div>
+      <div class="form-group full"><label>Note / บันทึก session</label><textarea id="f-note" placeholder="เช่น table เทพ, เจอ fish เยอะ, tilt ช่วงท้าย..."></textarea></div>
     </div>
     <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeModal(&#39;session-modal-bg&#39;)">ยกเลิก</button>
+      <button class="btn-ghost" onclick="closeModal('session-modal-bg')">ยกเลิก</button>
       <button class="btn" id="btn-save-session" onclick="addSession()">บันทึก</button>
     </div>
   </div>
 </div>
 
+<!-- SESSION NOTE VIEWER MODAL -->
+<div class="modal-bg" id="note-modal-bg" onclick="bgClose(event,'note-modal-bg')">
+  <div class="modal">
+    <div class="modal-title">📝 Note Session</div>
+    <div class="note-meta" id="note-meta"></div>
+    <div class="note-modal-content" id="note-content">ไม่มี note</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('note-modal-bg')">ปิด</button>
+    </div>
+  </div>
+</div>
+
 <!-- PLAYER MODAL -->
-<div class="modal-bg" id="player-modal-bg" onclick="bgClose(event,&#39;player-modal-bg&#39;)">
+<div class="modal-bg" id="player-modal-bg" onclick="bgClose(event,'player-modal-bg')">
   <div class="modal">
     <div class="modal-title" id="player-modal-title">เพิ่มผู้เล่น</div>
     <div class="form-grid">
@@ -455,38 +397,34 @@ select option{background:var(--bg2);}
           <button class="tag-opt" data-tag="nit" onclick="toggleTag(this)">🪨 Nit</button>
         </div>
       </div>
-      <div class="form-group full"><label>Location ที่มักเจอ</label><input type="text" id="p-location" placeholder="เช่น King&#39;s Casino โต๊ะ 5"></div>
-      <div class="form-group full"><label>Notes เกี่ยวกับผู้เล่น</label><textarea id="p-note" placeholder="เช่น 3-bet light ใน LP, check-raise bluff เยอะ..."></textarea></div>
+      <div class="form-group full"><label>Location ที่มักเจอ</label><input type="text" id="p-location" placeholder="เช่น King's Casino โต๊ะ 5"></div>
+      <div class="form-group full"><label>Notes</label><textarea id="p-note" placeholder="เช่น 3-bet light ใน LP, check-raise bluff เยอะ..."></textarea></div>
     </div>
     <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeModal(&#39;player-modal-bg&#39;)">ยกเลิก</button>
+      <button class="btn-ghost" onclick="closeModal('player-modal-bg')">ยกเลิก</button>
       <button class="btn-blue" id="btn-save-player" onclick="savePlayer()">บันทึก</button>
     </div>
   </div>
 </div>
 
 <script>
-const SUPA_URL = 'https://axnmucyiddjzeksjxabm.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4bm11Y3lpZGRqemVrc2p4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTI2ODAsImV4cCI6MjA5MjIyODY4MH0.QJYIF5tBeEJiuxgNOwrFGCfuqO54yUDPwLQFfa5DU1Y';
+const SUPA_URL='https://axnmucyiddjzeksjxabm.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4bm11Y3lpZGRqemVrc2p4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTI2ODAsImV4cCI6MjA5MjIyODY4MH0.QJYIF5tBeEJiuxgNOwrFGCfuqO54yUDPwLQFfa5DU1Y';
 
-let sessions=[], players=[], USER_ID=null, AUTH_TOKEN=null;
-let editPid=null, selColor='#22c55e', selTags=[];
+let sessions=[],players=[],USER_ID=null,AUTH_TOKEN=null;
+let editPid=null,selColor='#22c55e',selTags=[];
 let currentTab='login';
-const HANDS_PER_HR={NLH:25,PLO:25,MTT:50};
+const HPH={NLH:25,PLO:25,MTT:50};
 const TAG_LABEL={fish:'🐟 Fish',reg:'♟ Reg',whale:'🐋 Whale',aggro:'🔥 Aggro',nit:'🪨 Nit'};
 
-function getHeaders(){
-  return{'apikey':SUPA_KEY,'Authorization':`Bearer ${AUTH_TOKEN}`,'Content-Type':'application/json','Prefer':'return=representation'};
-}
+function hdr(){return{'apikey':SUPA_KEY,'Authorization':`Bearer ${AUTH_TOKEN}`,'Content-Type':'application/json','Prefer':'return=representation'};}
 
-// ================================================================
 // AUTH
-// ================================================================
-function switchTab(tab){
-  currentTab=tab;
-  document.getElementById('tab-login').classList.toggle('active',tab==='login');
-  document.getElementById('tab-register').classList.toggle('active',tab==='register');
-  document.getElementById('auth-btn').textContent=tab==='login'?'เข้าสู่ระบบ':'สมัครสมาชิก';
+function switchTab(t){
+  currentTab=t;
+  document.getElementById('tab-login').classList.toggle('active',t==='login');
+  document.getElementById('tab-register').classList.toggle('active',t==='register');
+  document.getElementById('auth-btn').textContent=t==='login'?'เข้าสู่ระบบ':'สมัครสมาชิก';
   document.getElementById('auth-err').textContent='';
 }
 
@@ -497,43 +435,30 @@ async function doAuth(){
   const btn=document.getElementById('auth-btn');
   if(!email||!pass){errEl.textContent='กรุณากรอก email และ password';return;}
   if(pass.length<6){errEl.textContent='password ต้องมีอย่างน้อย 6 ตัว';return;}
-  btn.disabled=true; btn.textContent='กำลังดำเนินการ...'; errEl.textContent='';
+  btn.disabled=true;btn.textContent='กำลังดำเนินการ...';errEl.textContent='';
   try{
-    const endpoint=currentTab==='login'?'/auth/v1/token?grant_type=password':'/auth/v1/signup';
-    const res=await fetch(SUPA_URL+endpoint,{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email,password:pass})
-    });
+    const ep=currentTab==='login'?'/auth/v1/token?grant_type=password':'/auth/v1/signup';
+    const res=await fetch(SUPA_URL+ep,{method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
     const data=await res.json();
     if(data.error||data.error_description){
       const msg=data.error_description||data.error||'เกิดข้อผิดพลาด';
-      errEl.textContent=msg==='Invalid login credentials'?'Email หรือ Password ไม่ถูกต้อง':msg;
-      return;
+      errEl.textContent=msg==='Invalid login credentials'?'Email หรือ Password ไม่ถูกต้อง':msg;return;
     }
     if(currentTab==='register'&&!data.access_token){
-      errEl.textContent=''; 
-      errEl.style.color='var(--green)';
-      errEl.textContent='สมัครสำเร็จ! กรุณาเช็ค email เพื่อยืนยัน แล้วกลับมา login';
-      return;
+      errEl.style.color='var(--green)';errEl.textContent='สมัครสำเร็จ! กลับมา login ได้เลยครับ';return;
     }
-    AUTH_TOKEN=data.access_token;
-    USER_ID=data.user.id;
+    AUTH_TOKEN=data.access_token;USER_ID=data.user.id;
     localStorage.setItem('pt_auth',JSON.stringify({access_token:data.access_token,user:data.user}));
     document.getElementById('user-email-display').textContent=email;
     await loadAndShow();
-  }catch(e){
-    errEl.textContent='เชื่อมต่อไม่ได้ ลองใหม่ครับ';
-  }finally{
-    btn.disabled=false;
-    btn.textContent=currentTab==='login'?'เข้าสู่ระบบ':'สมัครสมาชิก';
-  }
+  }catch(e){errEl.textContent='เชื่อมต่อไม่ได้ ลองใหม่ครับ';}
+  finally{btn.disabled=false;btn.textContent=currentTab==='login'?'เข้าสู่ระบบ':'สมัครสมาชิก';}
 }
 
 async function logout(){
   if(!confirm('ออกจากระบบ?'))return;
   localStorage.removeItem('pt_auth');
-  AUTH_TOKEN=null; USER_ID=null; sessions=[]; players=[];
+  AUTH_TOKEN=null;USER_ID=null;sessions=[];players=[];
   document.getElementById('app').style.display='none';
   document.getElementById('auth-screen').classList.remove('hidden');
   document.getElementById('auth-email').value='';
@@ -546,44 +471,33 @@ async function loadAndShow(){
   document.getElementById('loading').classList.remove('hidden');
   document.getElementById('loading-text').textContent='กำลังโหลดข้อมูล...';
   document.getElementById('auth-screen').classList.add('hidden');
-  try{
-    [sessions,players]=await Promise.all([dbGet('sessions'),dbGet('players')]);
-  }catch(e){toast('โหลดข้อมูลไม่ได้','red');}
+  try{[sessions,players]=await Promise.all([dbGet('sessions'),dbGet('players')]);}
+  catch(e){toast('โหลดข้อมูลไม่ได้','red');}
   document.getElementById('loading').classList.add('hidden');
   document.getElementById('app').style.display='grid';
   renderDashboard();
 }
 
-// ================================================================
 // DB
-// ================================================================
-async function dbGet(table){
-  const res=await fetch(`${SUPA_URL}/rest/v1/${table}?user_id=eq.${USER_ID}&order=created_at.asc`,{headers:getHeaders()});
-  if(!res.ok)throw new Error(await res.text());
-  return res.json();
+async function dbGet(t){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${t}?user_id=eq.${USER_ID}&order=created_at.asc`,{headers:hdr()});
+  if(!r.ok)throw new Error(await r.text());return r.json();
 }
-async function dbInsert(table,row){
-  const res=await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:'POST',headers:getHeaders(),body:JSON.stringify({...row,user_id:USER_ID})});
-  if(!res.ok)throw new Error(await res.text());
-  return res.json();
+async function dbInsert(t,row){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${t}`,{method:'POST',headers:hdr(),body:JSON.stringify({...row,user_id:USER_ID})});
+  if(!r.ok)throw new Error(await r.text());return r.json();
 }
-async function dbUpdate(table,id,row){
-  const res=await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}&user_id=eq.${USER_ID}`,{method:'PATCH',headers:getHeaders(),body:JSON.stringify(row)});
-  if(!res.ok)throw new Error(await res.text());
+async function dbUpdate(t,id,row){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${t}?id=eq.${id}&user_id=eq.${USER_ID}`,{method:'PATCH',headers:hdr(),body:JSON.stringify(row)});
+  if(!r.ok)throw new Error(await r.text());
 }
-async function dbDelete(table,id){
-  const res=await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}&user_id=eq.${USER_ID}`,{method:'DELETE',headers:getHeaders()});
-  if(!res.ok)throw new Error(await res.text());
+async function dbDelete(t,id){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${t}?id=eq.${id}&user_id=eq.${USER_ID}`,{method:'DELETE',headers:hdr()});
+  if(!r.ok)throw new Error(await r.text());
 }
 
-// ================================================================
-// UI HELPERS
-// ================================================================
-function toast(msg,type='green'){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className=`toast show ${type}`;
-  setTimeout(()=>el.classList.remove('show'),2500);
-}
+// UI
+function toast(msg,type='green'){const el=document.getElementById('toast');el.textContent=msg;el.className=`toast show ${type}`;setTimeout(()=>el.classList.remove('show'),2500);}
 function bgClose(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function switchView(v){
@@ -592,31 +506,23 @@ function switchView(v){
   document.querySelectorAll('.bottom-nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.getElementById('nav-'+v).classList.add('active');
-  const mn=document.getElementById('mnav-'+v);
-  if(mn) mn.classList.add('active');
-  // FAB label
-  const fab=document.getElementById('fab');
-  if(v==='dashboard') fab.textContent='+';
-  else if(v==='players') fab.textContent='+';
+  const mn=document.getElementById('mnav-'+v);if(mn)mn.classList.add('active');
   if(v==='dashboard')renderDashboard();
   if(v==='players')renderPlayers();
 }
-
 function onFab(){
   const active=document.querySelector('.view.active');
-  if(active&&active.id==='view-players') openPlayerModal(null);
+  if(active&&active.id==='view-players')openPlayerModal(null);
   else openSessionModal();
 }
 
-// ================================================================
 // SESSION
-// ================================================================
 function updateHandsEst(){
   const h=parseFloat(document.getElementById('f-hours').value)||0;
   const g=document.getElementById('f-game').value;
   const el=document.getElementById('hands-est');
-  if(h>0){el.className='hands-box filled';el.innerHTML=`<span>♠</span> ~${Math.round(h*(HANDS_PER_HR[g]||25)).toLocaleString()} hands`;}
-  else{el.className='hands-box empty';el.innerHTML=`<span>♠</span> กรอกชั่วโมงเพื่อประมาณ`;}
+  if(h>0){el.className='hands-box filled';el.innerHTML=`<span>♠</span> ~${Math.round(h*(HPH[g]||25)).toLocaleString()} hands`;}
+  else{el.className='hands-box empty';el.innerHTML=`<span>♠</span> กรอกชั่วโมง`;}
 }
 function openSessionModal(){
   document.getElementById('session-modal-bg').classList.add('open');
@@ -634,7 +540,7 @@ async function addSession(){
   const bb=parseFloat(document.getElementById('f-bb').value)||0;
   const note=document.getElementById('f-note').value;
   if(!date){alert('กรุณาใส่วันที่');return;}
-  const hands=hours>0?Math.round(hours*(HANDS_PER_HR[game]||25)):0;
+  const hands=hours>0?Math.round(hours*(HPH[game]||25)):0;
   const profit=cashout-buyin;
   const btn=document.getElementById('btn-save-session');
   btn.disabled=true;btn.textContent='กำลังบันทึก...';
@@ -644,9 +550,7 @@ async function addSession(){
     toast('✓ บันทึก session แล้ว');
     closeModal('session-modal-bg');
     ['f-location','f-stakes','f-buyin','f-cashout','f-hours','f-bb','f-note'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('f-game').selectedIndex=0;
-    updateHandsEst();
-    renderDashboard();
+    document.getElementById('f-game').selectedIndex=0;updateHandsEst();renderDashboard();
   }catch(e){toast('เกิดข้อผิดพลาด','red');}
   finally{btn.disabled=false;btn.textContent='บันทึก';}
 }
@@ -656,9 +560,22 @@ async function deleteSession(id){
   catch(e){toast('ลบไม่ได้','red');}
 }
 
-// ================================================================
+function viewNote(id){
+  const s=sessions.find(x=>x.id==id);if(!s)return;
+  const dt=new Date(s.date+'T00:00:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const profitCls=s.profit>=0?'green':'red';
+  const gb=s.game==='NLH'?'NLH':s.game==='PLO'?'PLO':'MTT';
+  document.getElementById('note-meta').innerHTML=
+    `<span class="note-chip">${dt}</span>`+
+    `<span class="note-chip">${gb} · ${s.stakes}</span>`+
+    `<span class="note-chip">${s.location}</span>`+
+    `<span class="note-chip">${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</span>`+
+    `<span class="note-chip ${profitCls}">${s.profit>=0?'+':''}฿${Math.abs(Math.round(s.profit)).toLocaleString()}</span>`;
+  document.getElementById('note-content').textContent=s.note&&s.note.trim()?s.note:'ไม่มี note สำหรับ session นี้';
+  document.getElementById('note-modal-bg').classList.add('open');
+}
+
 // PLAYER
-// ================================================================
 function openPlayerModal(id){
   editPid=id;selTags=[];selColor='#22c55e';
   document.querySelectorAll('.tag-opt').forEach(b=>b.className='tag-opt');
@@ -683,16 +600,12 @@ function toggleTag(el){const t=el.dataset.tag,cls='on-'+t;if(el.classList.contai
 async function savePlayer(){
   const name=document.getElementById('p-name').value.trim();
   if(!name){alert('กรุณาใส่ชื่อ');return;}
-  const location=document.getElementById('p-location').value;
-  const note=document.getElementById('p-note').value;
-  const btn=document.getElementById('btn-save-player');
-  btn.disabled=true;btn.textContent='กำลังบันทึก...';
+  const location=document.getElementById('p-location').value,note=document.getElementById('p-note').value;
+  const btn=document.getElementById('btn-save-player');btn.disabled=true;btn.textContent='กำลังบันทึก...';
   try{
     if(editPid){await dbUpdate('players',editPid,{name,color:selColor,tags:selTags,location,note});}
     else{const added=new Date().toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});await dbInsert('players',{id:Date.now(),name,color:selColor,tags:selTags,location,note,added});}
-    players=await dbGet('players');
-    toast(editPid?'✓ อัปเดตแล้ว':'✓ เพิ่มผู้เล่นแล้ว');
-    closeModal('player-modal-bg');renderPlayers();
+    players=await dbGet('players');toast(editPid?'✓ อัปเดตแล้ว':'✓ เพิ่มผู้เล่นแล้ว');closeModal('player-modal-bg');renderPlayers();
   }catch(e){toast('เกิดข้อผิดพลาด','red');}
   finally{btn.disabled=false;btn.textContent='บันทึก';}
 }
@@ -702,9 +615,7 @@ async function deletePlayer(id){
   catch(e){toast('ลบไม่ได้','red');}
 }
 
-// ================================================================
-// STATS & CHART
-// ================================================================
+// STATS
 function computeStats(list){
   const total=list.reduce((a,s)=>a+(parseFloat(s.profit)||0),0);
   const totalHours=list.reduce((a,s)=>a+(parseFloat(s.hours)||0),0);
@@ -712,12 +623,24 @@ function computeStats(list){
   const winrate=list.length?(wins/list.length*100):null;
   const hourly=totalHours>0?(total/totalHours):null;
   const cash=list.filter(s=>s.game!=='MTT'&&s.hands>0&&s.bb>0);
-  let bb100=null;
-  if(cash.length){const bbP=cash.reduce((a,s)=>a+(s.profit/s.bb),0),hT=cash.reduce((a,s)=>a+s.hands,0);bb100=hT>0?(bbP/hT*100):null;}
+  let bb100=null,bbhour=null;
+  if(cash.length){
+    const bbP=cash.reduce((a,s)=>a+(s.profit/s.bb),0);
+    const hT=cash.reduce((a,s)=>a+s.hands,0);
+    const hHr=cash.reduce((a,s)=>a+(parseFloat(s.hours)||0),0);
+    bb100=hT>0?(bbP/hT*100):null;
+    bbhour=hHr>0?(bbP/hHr):null;
+  }
   const profits=list.map(s=>parseFloat(s.profit)||0);
-  return{total,totalHours,wins,losses,winrate,hourly,bb100,best:list.length?Math.max(...profits):null,worst:list.length?Math.min(...profits):null};
+  return{total,totalHours,wins,losses,winrate,hourly,bb100,bbhour,best:list.length?Math.max(...profits):null,worst:list.length?Math.min(...profits):null};
 }
-function fs(n,p='฿'){if(n===null||n===undefined)return'—';const s=p+Math.abs(Math.round(n)).toLocaleString();return(n>=0?'+':'-')+s;}
+
+function fs(n,p='฿'){
+  if(n===null||n===undefined)return'—';
+  return(n>=0?'+':'-')+p+Math.abs(Math.round(n)).toLocaleString();
+}
+
+// CHART
 function drawChart(list){
   const canvas=document.getElementById('profitChart');
   const wrap=canvas.parentElement;
@@ -727,7 +650,7 @@ function drawChart(list){
   const hint=document.getElementById('chart-hint');
   if(!sorted.length){hint.style.display='';return;}hint.style.display='none';
   let cum=0;const pts=[{x:0,y:0}];
-  sorted.forEach((s,i)=>{cum+=(parseFloat(s.profit)||0);pts.push({x:i+1,y:cum});});
+  sorted.forEach((s)=>{cum+=(parseFloat(s.profit)||0);pts.push({x:pts.length,y:cum});});
   const W=canvas.width,H=canvas.height,pd={t:10,r:16,b:28,l:64};
   const cw=W-pd.l-pd.r,ch=H-pd.t-pd.b;
   const ys=pts.map(p=>p.y),mn=Math.min(...ys),mx=Math.max(...ys),rng=mx-mn||1,mxX=pts.length-1||1;
@@ -745,9 +668,34 @@ function drawChart(list){
   pts.forEach(p=>{ctx.beginPath();ctx.arc(tx(p.x),ty(p.y),3,0,Math.PI*2);ctx.fillStyle='#22c55e';ctx.fill();ctx.strokeStyle='#0d1117';ctx.lineWidth=1.5;ctx.stroke();});
 }
 
-// ================================================================
-// RENDER
-// ================================================================
+// CLUB BREAKDOWN
+function renderClubs(list){
+  const map={};
+  list.forEach(s=>{
+    const loc=s.location&&s.location!=='—'?s.location:'ไม่ระบุ';
+    if(!map[loc])map[loc]={profit:0,sessions:0,hours:0};
+    map[loc].profit+=parseFloat(s.profit)||0;
+    map[loc].sessions++;
+    map[loc].hours+=parseFloat(s.hours)||0;
+  });
+  const clubs=Object.entries(map).sort((a,b)=>b[1].profit-a[1].profit);
+  const el=document.getElementById('clubs-grid');
+  if(!clubs.length){el.innerHTML=`<div style="font-size:0.72rem;color:var(--muted);padding:0.5rem 0">ยังไม่มีข้อมูล</div>`;return;}
+  const maxAbs=Math.max(...clubs.map(([,v])=>Math.abs(v.profit)))||1;
+  el.innerHTML=clubs.map(([name,v])=>{
+    const cls=v.profit>=0?'pos':'neg';
+    const barColor=v.profit>=0?'var(--green)':'var(--red)';
+    const pct=Math.round(Math.abs(v.profit)/maxAbs*100);
+    return `<div class="club-card">
+      <div class="club-name" title="${name}">${name}</div>
+      <div class="club-profit ${cls}">${fs(v.profit)}</div>
+      <div class="club-meta">${v.sessions} sessions · ${v.hours.toFixed(1)}h</div>
+      <div class="club-bar"><div class="club-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// RENDER DASHBOARD
 function renderDashboard(){
   const gf=document.getElementById('filter-game').value,sf=document.getElementById('filter-sort').value;
   let fl=gf?sessions.filter(s=>s.game===gf):[...sessions];
@@ -756,47 +704,71 @@ function renderDashboard(){
   else if(sf==='profit')fl.sort((a,b)=>b.profit-a.profit);
   else fl.sort((a,b)=>a.profit-b.profit);
   const st=computeStats(fl);
+
   const sp=document.getElementById('sidebar-profit');sp.textContent=fs(st.total);sp.className='bankroll-val '+(st.total>=0?'pos':'neg');
   const p2=document.getElementById('stat-profit');p2.textContent=fs(st.total);p2.className='stat-val '+(st.total>=0?'pos':'neg');
   document.getElementById('stat-sessions').textContent=fl.length+' sessions';
   const he=document.getElementById('stat-hourly');
   if(st.hourly!==null){he.textContent=fs(st.hourly)+'/h';he.className='stat-val '+(st.hourly>=0?'pos':'neg');}else{he.textContent='—';he.className='stat-val';}
-  document.getElementById('stat-hours').textContent=st.totalHours.toFixed(1)+' hrs total';
+  document.getElementById('stat-hours').textContent=st.totalHours.toFixed(1)+' hrs';
   const be=document.getElementById('stat-bb100');
   if(st.bb100!==null){be.textContent=(st.bb100>=0?'+':'')+st.bb100.toFixed(1);be.className='stat-val '+(st.bb100>=0?'pos':'neg');}else{be.textContent='—';be.className='stat-val';}
+  const bhe=document.getElementById('stat-bbhour');
+  if(st.bbhour!==null){bhe.textContent=(st.bbhour>=0?'+':'')+st.bbhour.toFixed(1);bhe.className='stat-val '+(st.bbhour>=0?'pos':'neg');}else{bhe.textContent='—';bhe.className='stat-val';}
   const we=document.getElementById('stat-winrate');
   if(st.winrate!==null){we.textContent=st.winrate.toFixed(0)+'%';we.className='stat-val '+(st.winrate>=50?'pos':'neg');}else{we.textContent='—';we.className='stat-val';}
   document.getElementById('stat-wl').textContent=st.wins+'W · '+st.losses+'L';
   const bst=document.getElementById('stat-best');
   if(st.best!==null){bst.textContent=fs(st.best);bst.className='stat-val '+(st.best>=0?'pos':'neg');}else{bst.textContent='—';bst.className='stat-val';}
   document.getElementById('stat-worst').textContent=st.worst!==null?'Worst: '+fs(st.worst):'Worst: —';
+
   drawChart(gf?fl:sessions);
-  const list=document.getElementById('session-list');
-  if(!fl.length){list.innerHTML=`<div class="empty"><div class="empty-icon">♣</div><p>ยังไม่มี session<br>กด <strong style="color:var(--green)">+ New Session</strong> เพื่อเริ่มบันทึก</p></div>`;return;}
-  list.innerHTML=fl.map(s=>{
-    const cls=s.profit>=0?'pos':'neg',gb=s.game==='NLH'?'badge-nlh':s.game==='PLO'?'badge-plo':'badge-mtt';
+  renderClubs(gf?fl:sessions);
+
+  const listEl=document.getElementById('session-list');
+  if(!fl.length){listEl.innerHTML=`<div class="empty"><div class="empty-icon">♣</div><p>ยังไม่มี session<br>กด <strong style="color:var(--green)">+ New Session</strong></p></div>`;return;}
+
+  const isMob=window.innerWidth<=768;
+  listEl.innerHTML=fl.map(s=>{
+    const cls=s.profit>=0?'pos':'neg';
+    const gb=s.game==='NLH'?'badge-nlh':s.game==='PLO'?'badge-plo':'badge-mtt';
     const dt=new Date(s.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
-    const isMobile=window.innerWidth<=768;
-    if(isMobile){
-      return `<div class="table-row"${s.note?` title="${s.note}"`:''}>`+
-        `<div class="table-row-top"><div style="display:flex;align-items:center;gap:8px"><span class="badge ${gb}">${s.game}</span><span style="font-size:0.7rem;color:var(--muted)">${dt}</span></div><div class="${cls}" style="font-weight:600;font-size:1rem">${fs(s.profit)}</div></div>`+
-        `<div class="table-row-mid"><span style="color:var(--muted);font-size:0.68rem">${s.location}</span><span style="color:var(--muted);font-size:0.68rem">·</span><span style="color:var(--muted);font-size:0.68rem">${s.stakes}</span><span style="color:var(--muted);font-size:0.68rem">·</span><span style="color:var(--muted);font-size:0.68rem">${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</span></div>`+
-        `<div style="display:flex;justify-content:flex-end"><button class="icon-btn" onclick="deleteSession(${s.id})">✕ ลบ</button></div>`+
-        `</div>`;
+    const hasNote=s.note&&s.note.trim();
+    const noteBtn=`<button class="note-btn${hasNote?' has-note':''}" onclick="viewNote(${s.id})" title="${hasNote?'ดู note':'ไม่มี note'}">📝</button>`;
+    if(isMob){
+      return `<div class="table-row">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge ${gb}">${s.game}</span><span style="color:var(--muted);font-size:0.68rem">${dt}</span></div>
+          <div class="${cls}" style="font-weight:600;font-size:1rem">${fs(s.profit)}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+          <span style="color:var(--muted);font-size:0.68rem">${s.location}</span>
+          <span style="color:var(--muted);font-size:0.68rem">· ${s.stakes}</span>
+          <span style="color:var(--muted);font-size:0.68rem">· ${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:4px;margin-top:4px">
+          ${noteBtn}
+          <button class="icon-btn" onclick="deleteSession(${s.id})">✕</button>
+        </div>
+      </div>`;
     }
-    return `<div class="table-row"${s.note?` title="${s.note}"`:''}>`+
-      `<div>${dt}</div><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);padding-right:6px">${s.location}</div>`+
-      `<div><span class="badge ${gb}">${s.game}</span></div><div>${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</div>`+
+    return `<div class="table-row">`+
+      `<div>${dt}</div>`+
+      `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);padding-right:6px">${s.location}</div>`+
+      `<div><span class="badge ${gb}">${s.game}</span></div>`+
+      `<div>${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</div>`+
       `<div style="color:var(--muted)">~${s.hands>0?parseInt(s.hands).toLocaleString():'—'}</div>`+
       `<div style="color:var(--muted);font-size:0.68rem">${s.stakes}</div>`+
       `<div class="${cls}" style="font-weight:500">${fs(s.profit)}</div>`+
-      `<div><button class="icon-btn" onclick="deleteSession(${s.id})">✕</button></div></div>`;
+      `<div>${noteBtn}</div>`+
+      `<div><button class="icon-btn" onclick="deleteSession(${s.id})">✕</button></div>`+
+      `</div>`;
   }).join('');
 }
 
 function renderPlayers(){
   const c=document.getElementById('players-container');
-  if(!players.length){c.innerHTML=`<div class="empty"><div class="empty-icon">👤</div><p>ยังไม่มีข้อมูลผู้เล่น<br>กด <strong style="color:var(--blue)">+ Add Player</strong> เพื่อเพิ่ม</p></div>`;return;}
+  if(!players.length){c.innerHTML=`<div class="empty"><div class="empty-icon">👤</div><p>ยังไม่มีข้อมูลผู้เล่น<br>กด <strong style="color:var(--blue)">+ Add Player</strong></p></div>`;return;}
   c.innerHTML=`<div class="players-grid">${players.map(p=>{
     const init=p.name.slice(0,2).toUpperCase();
     const tags=(p.tags||[]).map(t=>`<span class="ptag ptag-${t}">${TAG_LABEL[t]||t}</span>`).join('');
@@ -815,23 +787,19 @@ function renderPlayers(){
 
 window.addEventListener('resize',()=>{if(document.getElementById('view-dashboard').classList.contains('active'))drawChart(sessions);});
 
-// ================================================================
-// INIT
-// ================================================================
 (async()=>{
   const stored=localStorage.getItem('pt_auth');
   if(stored){
     try{
       const {access_token,user}=JSON.parse(stored);
-      AUTH_TOKEN=access_token; USER_ID=user.id;
+      AUTH_TOKEN=access_token;USER_ID=user.id;
       document.getElementById('user-email-display').textContent=user.email||'';
-      await loadAndShow(); return;
+      await loadAndShow();return;
     }catch(e){localStorage.removeItem('pt_auth');}
   }
   document.getElementById('loading').classList.add('hidden');
   document.getElementById('auth-screen').classList.remove('hidden');
 })();
 </script>
-
-
-</body></html>
+</body>
+</html>
