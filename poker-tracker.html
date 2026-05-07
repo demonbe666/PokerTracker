@@ -339,7 +339,7 @@ select option{background:var(--bg2);}
 <!-- SESSION MODAL -->
 <div class="modal-bg" id="session-modal-bg" onclick="bgClose(event,'session-modal-bg')">
   <div class="modal">
-    <div class="modal-title">บันทึก Session ใหม่</div>
+    <div class="modal-title" id="session-modal-title">บันทึก Session ใหม่</div>
     <div class="form-grid">
       <div class="form-group"><label>วันที่</label><input type="date" id="f-date"></div>
       <div class="form-group"><label>Game Type</label><select id="f-game" onchange="updateHandsEst()"><option value="NLH">NLH Cash</option><option value="PLO">PLO Cash</option><option value="MTT">MTT</option></select></div>
@@ -412,7 +412,7 @@ const SUPA_URL='https://axnmucyiddjzeksjxabm.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4bm11Y3lpZGRqemVrc2p4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTI2ODAsImV4cCI6MjA5MjIyODY4MH0.QJYIF5tBeEJiuxgNOwrFGCfuqO54yUDPwLQFfa5DU1Y';
 
 let sessions=[],players=[],USER_ID=null,AUTH_TOKEN=null;
-let editPid=null,selColor='#22c55e',selTags=[];
+let editPid=null,editSid=null,selColor='#22c55e',selTags=[];
 let currentTab='login';
 const HPH={NLH:25,PLO:25,MTT:50};
 const TAG_LABEL={fish:'🐟 Fish',reg:'♟ Reg',whale:'🐋 Whale',aggro:'🔥 Aggro',nit:'🪨 Nit'};
@@ -524,9 +524,28 @@ function updateHandsEst(){
   if(h>0){el.className='hands-box filled';el.innerHTML=`<span>♠</span> ~${Math.round(h*(HPH[g]||25)).toLocaleString()} hands`;}
   else{el.className='hands-box empty';el.innerHTML=`<span>♠</span> กรอกชั่วโมง`;}
 }
-function openSessionModal(){
+function openSessionModal(id){
+  editSid=id||null;
+  const s=id?sessions.find(x=>x.id==id):null;
+  document.getElementById('session-modal-title').textContent=s?'แก้ไข Session':'บันทึก Session ใหม่';
+  document.getElementById('btn-save-session').textContent=s?'บันทึกการแก้ไข':'บันทึก';
+  if(s){
+    document.getElementById('f-date').value=s.date||'';
+    const gOpts=document.getElementById('f-game').options;
+    for(let o of gOpts) o.selected=(o.value===s.game);
+    document.getElementById('f-location').value=s.location!=='—'?s.location:'';
+    document.getElementById('f-stakes').value=s.stakes!=='—'?s.stakes:'';
+    document.getElementById('f-buyin').value=s.buyin||'';
+    document.getElementById('f-cashout').value=s.cashout||'';
+    document.getElementById('f-hours').value=s.hours||'';
+    document.getElementById('f-bb').value=s.bb||'';
+    document.getElementById('f-note').value=s.note||'';
+  } else {
+    document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+    ['f-location','f-stakes','f-buyin','f-cashout','f-hours','f-bb','f-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-game').selectedIndex=0;
+  }
   document.getElementById('session-modal-bg').classList.add('open');
-  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
   updateHandsEst();
 }
 async function addSession(){
@@ -545,14 +564,18 @@ async function addSession(){
   const btn=document.getElementById('btn-save-session');
   btn.disabled=true;btn.textContent='กำลังบันทึก...';
   try{
-    await dbInsert('sessions',{id:Date.now(),date,game,location,stakes,buyin,cashout,profit,hours,hands,bb,note});
+    if(editSid){
+      await dbUpdate('sessions',editSid,{date,game,location,stakes,buyin,cashout,profit,hours,hands,bb,note});
+      toast('✓ อัปเดต session แล้ว');
+    } else {
+      await dbInsert('sessions',{id:Date.now(),date,game,location,stakes,buyin,cashout,profit,hours,hands,bb,note});
+      toast('✓ บันทึก session แล้ว');
+    }
     sessions=await dbGet('sessions');
-    toast('✓ บันทึก session แล้ว');
     closeModal('session-modal-bg');
-    ['f-location','f-stakes','f-buyin','f-cashout','f-hours','f-bb','f-note'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('f-game').selectedIndex=0;updateHandsEst();renderDashboard();
+    renderDashboard();
   }catch(e){toast('เกิดข้อผิดพลาด','red');}
-  finally{btn.disabled=false;btn.textContent='บันทึก';}
+  finally{btn.disabled=false;btn.textContent=editSid?'บันทึกการแก้ไข':'บันทึก';}
 }
 async function deleteSession(id){
   if(!confirm('ลบ session นี้?'))return;
@@ -735,6 +758,7 @@ function renderDashboard(){
     const dt=new Date(s.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
     const hasNote=s.note&&s.note.trim();
     const noteBtn=`<button class="note-btn${hasNote?' has-note':''}" onclick="viewNote(${s.id})" title="${hasNote?'ดู note':'ไม่มี note'}">📝</button>`;
+    const editBtn=`<button class="note-btn" onclick="openSessionModal(${s.id})" title="แก้ไข" style="color:var(--amber)">✏️</button>`;
     if(isMob){
       return `<div class="table-row">
         <div style="display:flex;justify-content:space-between;align-items:center">
@@ -747,6 +771,7 @@ function renderDashboard(){
           <span style="color:var(--muted);font-size:0.68rem">· ${s.hours>0?parseFloat(s.hours).toFixed(1)+'h':'—'}</span>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:4px;margin-top:4px">
+          ${editBtn}
           ${noteBtn}
           <button class="icon-btn" onclick="deleteSession(${s.id})">✕</button>
         </div>
@@ -761,7 +786,7 @@ function renderDashboard(){
       `<div style="color:var(--muted);font-size:0.68rem">${s.stakes}</div>`+
       `<div class="${cls}" style="font-weight:500">${fs(s.profit)}</div>`+
       `<div>${noteBtn}</div>`+
-      `<div><button class="icon-btn" onclick="deleteSession(${s.id})">✕</button></div>`+
+      `<div style="display:flex;gap:2px">${editBtn}<button class="icon-btn" onclick="deleteSession(${s.id})">✕</button></div>`+
       `</div>`;
   }).join('');
 }
