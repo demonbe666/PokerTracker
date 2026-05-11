@@ -658,7 +658,7 @@ function computeStats(list){
   return{total,totalHours,wins,losses,winrate,hourly,bb100,bbhour,best:list.length?Math.max(...profits):null,worst:list.length?Math.min(...profits):null};
 }
 
-function fs(n,p='฿'){
+function fs(n,p=''){
   if(n===null||n===undefined)return'—';
   return(n>=0?'+':'-')+p+Math.abs(Math.round(n)).toLocaleString();
 }
